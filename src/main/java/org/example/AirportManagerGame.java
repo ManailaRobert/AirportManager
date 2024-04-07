@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.text.MessageFormat;
 
 public class AirportManagerGame extends JFrame {
 
@@ -34,18 +35,24 @@ public class AirportManagerGame extends JFrame {
     JPanel LB_SentPlanesPanel = new JPanel();
     JList  LB_SentPLanes = new JList(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
 
+
+
+    //lane 1
     JPanel Lane1Space = new JPanel(new GridLayout(2,1));
     JPanel Lane1 = new JPanel(new BorderLayout());
-
-    JTextField Lane1Distance = new JTextField();
-    JPanel Lane1Center = new JPanel(new GridLayout(1,2));
+    JPanel Lane1Center = new JPanel();
+    JLabel LabelLane1 = new JLabel("Lane 1");
+    JComboBox Lane1Distance = new JComboBox();
+    JPanel Lane1DistancePanel = new JPanel(new GridLayout(1,2));
+    JLabel Lane1DistanceLabel = new JLabel("                                   Distance:");
+    JPanel Lane1Top = new JPanel(new GridLayout(1,2));
     JLabel Lane1PlaneName= new JLabel("Plane 1");
     JButton Lane1Crew = new JButton("Crew");
 
     JPanel Lane1Bottom = new JPanel(new GridLayout(1,3));
     JLabel Lane1Fuel = new JLabel("Fuel: 100%");
     JLabel Lane1Passagers = new JLabel("Passagers: 34/100");
-    JLabel Lane1Status = new JLabel("Status: Bording");
+    JLabel Lane1Status = new JLabel("  Status: Bording");
 
 
 
@@ -120,14 +127,22 @@ public class AirportManagerGame extends JFrame {
 
         // available planes
         LB_AvailablePLanes.setBackground(Color.LIGHT_GRAY);
+        LB_AvailablePLanes.setFont(f);
         LB_AvailablePLanes.setPreferredSize(new Dimension(200,125));
 
         // sent planes
         LB_SentPLanes.setBackground(Color.LIGHT_GRAY);
+        LB_SentPLanes.setFont(f);
         LB_SentPLanes.setPreferredSize(new Dimension(200,125));
 
         //Lane 1
-        Lane1.setBackground(Color.LIGHT_GRAY);
+        Lane1Top.setBackground(Color.LIGHT_GRAY);
+        Lane1Center.setBackground(Color.LIGHT_GRAY);
+        Lane1Bottom.setBackground(Color.LIGHT_GRAY);
+
+        Lane1Crew.setPreferredSize(new Dimension(10,10));
+        Lane1Distance.setPreferredSize(new Dimension(200,30));
+        Lane1DistanceLabel.setFont(f);
     }
     private void addUI(){
 
@@ -173,9 +188,10 @@ public class AirportManagerGame extends JFrame {
 
 
         //lane 1
-
-        Lane1Center.add(Lane1PlaneName);
-        Lane1Center.add(Lane1Crew);
+        Lane1Top.add(Lane1PlaneName);
+        Lane1Top.add(Lane1Crew);
+        Lane1.add(Lane1Top,BorderLayout.NORTH);
+        Lane1Center.add(LabelLane1);
         Lane1.add(Lane1Center,BorderLayout.CENTER);
         Lane1Bottom.add(Lane1Fuel);
         Lane1Bottom.add(Lane1Passagers);
@@ -183,7 +199,15 @@ public class AirportManagerGame extends JFrame {
         Lane1.add(Lane1Bottom,BorderLayout.SOUTH);
 
         Lane1Space.add(Lane1,BorderLayout.CENTER);
-        Lane1Space.add(Lane1Distance,BorderLayout.SOUTH);
+        for(int i = 1 ;i<=10; i++)
+        {
+            int intValue = (10000+i*1000);
+            String value = MessageFormat.format("{0} km", intValue);
+            Lane1Distance.addItem(value);
+        }
+        Lane1DistancePanel.add(Lane1DistanceLabel);
+        Lane1DistancePanel.add(Lane1Distance);
+        Lane1Space.add(Lane1DistancePanel,BorderLayout.SOUTH);
 
         position.gridx = 1; position.gridy = 0;
         CenterPanel.add(Lane1Space,position);
