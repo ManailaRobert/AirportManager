@@ -12,10 +12,12 @@ public class AirportManagerGame extends JFrame {
     //JPanel LeftPanel = new JPanel(new GridLayout(2,1));
     JPanel CenterPanel = new JPanel(new GridBagLayout());
     JPanel LB_AwaitingPlanesPanel = new JPanel();
+    JLabel Label_AwaitingPlanes = new JLabel("Awaiting planes:");
     JList LB_AwaitingPlanes = new JList<>(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
 
     JPanel LB_DetailsPanel = new JPanel();
-    JList  LB_Details = new JList(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
+    JLabel Label_PlaneDetails = new JLabel("Plane details:");
+    JList  LB_PlaneDetails = new JList(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
 
     //top UI
     JPanel topUI = new JPanel(new GridLayout(1,7));
@@ -28,7 +30,7 @@ public class AirportManagerGame extends JFrame {
     JLabel Label_Trips= new JLabel("Trips: 343");
 
     // to lanes buttons
-    JPanel BTN_ToLanesPanel = new JPanel(new GridLayout(4,1));
+    JPanel ToLanesPanel = new JPanel();
     JLabel Label_ToLanesDetails = new JLabel("Select a lane.");
     JButton BTN_ToLane1 = new JButton("To lane 1");
     JButton BTN_ToLane2 = new JButton("To lane 2");
@@ -94,7 +96,6 @@ public class AirportManagerGame extends JFrame {
     JLabel Label_Lane3Status = new JLabel("  Status: Bording");
 
     //lane 1 buttons
-    JPanel EmptyPanel = new JPanel();
     JPanel Lane1Buttons = new JPanel(new GridLayout(4,1));
     JPanel Lane1LoadPanel = new JPanel(new GridLayout(1,2));
     JPanel Lane1BoardPanel = new JPanel(new GridLayout(1,2));
@@ -103,7 +104,7 @@ public class AirportManagerGame extends JFrame {
     JButton BTN_Lane1Load = new JButton("Load Bagages");
     JButton BTN_Lane1Board = new JButton("Board Passagers");
     JButton BTN_Lane1Refuel = new JButton("Refuel");
-    JLabel Lane1Revenue = new JLabel("Revenue: ");
+    JLabel Label_Lane1Revenue = new JLabel("Revenue: ");
     //lane 1 Requirements
     JLabel Lane1BagageH = new JLabel("BagageHandlers: ");
     JLabel Lane1FuelH = new JLabel("FuelHandlers: ");
@@ -118,7 +119,7 @@ public class AirportManagerGame extends JFrame {
     JButton BTN_Lane2Load = new JButton("Load Bagages");
     JButton BTN_Lane2Board = new JButton("Board Passagers");
     JButton BTN_Lane2Refuel = new JButton("Refuel");
-    JLabel Lane2Revenue = new JLabel("Revenue: ");
+    JLabel Label_Lane2Revenue = new JLabel("Revenue: ");
     //lane 2 Requirements
     JLabel Lane2BagageH = new JLabel("BagageHandlers: ");
     JLabel Lane2FuelH = new JLabel("FuelHandlers: ");
@@ -133,7 +134,7 @@ public class AirportManagerGame extends JFrame {
     JButton BTN_Lane3Load = new JButton("Load Bagages");
     JButton BTN_Lane3Board = new JButton("Board Passagers");
     JButton BTN_Lane3Refuel = new JButton("Refuel");
-    JLabel Lane3Revenue = new JLabel("Revenue: ");
+    JLabel Label_Lane3Revenue = new JLabel("Revenue: ");
     //lane 3 Requirements
     JLabel Lane3BagageH = new JLabel("BagageHandlers: ");
     JLabel Lane3FuelH = new JLabel("FuelHandlers: ");
@@ -156,19 +157,19 @@ public class AirportManagerGame extends JFrame {
 
 
     private void addConstraints(){
-    LB_Details.setEnabled(false);
+    LB_PlaneDetails.setEnabled(false);
     }
 
     private void decorateUI(){
         Font f = new Font("Times New Roman",Font.BOLD,14);
         //Awaiting planes
+        Label_AwaitingPlanes.setFont(f);
         LB_AwaitingPlanes.setBackground(Color.LIGHT_GRAY);
-        LB_AwaitingPlanes.setPreferredSize(new Dimension(300,350));
         LB_AwaitingPlanesPanel.setPreferredSize(new Dimension(300,350));
         LB_AwaitingPlanesPanel.setBackground(Color.PINK);
         // Details
-        LB_Details.setBackground(Color.LIGHT_GRAY);
-        LB_Details.setPreferredSize(new Dimension(300,250));
+        Label_PlaneDetails.setFont(f);
+        LB_PlaneDetails.setBackground(Color.LIGHT_GRAY);
         LB_DetailsPanel.setBackground(Color.PINK);
         //Top UI
         topUI.setBackground(Color.BLUE);
@@ -200,26 +201,31 @@ public class AirportManagerGame extends JFrame {
         //BTN To Lanes
         Label_ToLanesDetails.setFont(f);
         Label_ToLanesDetails.setBorder(new EmptyBorder(0,0,0,0));
-        BTN_ToLanesPanel.setPreferredSize(new Dimension(200,100));
-        BTN_ToLanesPanel.setBackground(Color.PINK);
+        Label_ToLanesDetails.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        ToLanesPanel.setPreferredSize(new Dimension(200,100));
+        ToLanesPanel.setBackground(Color.PINK);
 
         BTN_ToLane1.setFont(f);
         BTN_ToLane1.setFocusPainted(false);
         BTN_ToLane1.setBackground(Color.LIGHT_GRAY);
         BTN_ToLane1.setForeground(Color.black);
-        BTN_ToLane1.setPreferredSize(new Dimension(100,20));
+        BTN_ToLane1.setPreferredSize(new Dimension(100,15));
+        BTN_ToLane1.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         BTN_ToLane2.setFont(f);
         BTN_ToLane2.setFocusPainted(false);
         BTN_ToLane2.setBackground(Color.LIGHT_GRAY);
         BTN_ToLane2.setForeground(Color.black);
-        BTN_ToLane2.setPreferredSize(new Dimension(100,20));
+        BTN_ToLane2.setPreferredSize(new Dimension(100,15));
+        BTN_ToLane2.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         BTN_ToLane3.setFont(f);
         BTN_ToLane3.setFocusPainted(false);
         BTN_ToLane3.setBackground(Color.LIGHT_GRAY);
         BTN_ToLane3.setForeground(Color.black);
-        BTN_ToLane3.setPreferredSize(new Dimension(100,20));
+        BTN_ToLane3.setPreferredSize(new Dimension(100,15));
+        BTN_ToLane3.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // available planes
         Label_AvailablePlanes.setFont(f);
@@ -281,7 +287,7 @@ public class AirportManagerGame extends JFrame {
         BTN_Lane1Load.setFocusPainted(false);
         BTN_Lane1Board.setFocusPainted(false);
         BTN_Lane1Refuel.setFocusPainted(false);
-        Lane1Revenue.setFont(f);
+        Label_Lane1Revenue.setFont(f);
 
         Lane1BagageH.setFont(f);
         Lane1FuelH.setFont(f);
@@ -297,7 +303,7 @@ public class AirportManagerGame extends JFrame {
         BTN_Lane2Board.setFocusPainted(false);
         BTN_Lane2Refuel.setFocusPainted(false);
 
-        Lane2Revenue.setFont(f);
+        Label_Lane2Revenue.setFont(f);
         Lane2BagageH.setFont(f);
         Lane2FuelH.setFont(f);
         Lane2RefuelPrice.setFont(f);
@@ -312,7 +318,7 @@ public class AirportManagerGame extends JFrame {
         BTN_Lane3Board.setFocusPainted(false);
         BTN_Lane3Refuel.setFocusPainted(false);
 
-        Lane3Revenue.setFont(f);
+        Label_Lane3Revenue.setFont(f);
         Lane3BagageH.setFont(f);
         Lane3FuelH.setFont(f);
         Lane3RefuelPrice.setFont(f);
@@ -336,30 +342,40 @@ public class AirportManagerGame extends JFrame {
         // -------------- Center Panel -------------
 
         //LB Awaiting Planes
+        LB_AwaitingPlanesPanel.setLayout(new BoxLayout(LB_AwaitingPlanesPanel,BoxLayout.Y_AXIS));
+        LB_AwaitingPlanesPanel.add(Label_AwaitingPlanes);
         LB_AwaitingPlanesPanel.add(new JScrollPane(LB_AwaitingPlanes));
         position.gridx = 0;position.gridy = 0; position.gridheight = 2;
         CenterPanel.add(LB_AwaitingPlanesPanel,position);
 
         //Label Details
+        LB_DetailsPanel.setLayout(new BoxLayout(LB_DetailsPanel,BoxLayout.Y_AXIS));
+        LB_DetailsPanel.add(Label_PlaneDetails);
+        LB_DetailsPanel.add(new JScrollPane(LB_PlaneDetails));
         position.gridx = 0;position.gridy = 2;position.gridheight = 1;
-        LB_DetailsPanel.add(new JScrollPane(LB_Details));
         CenterPanel.add(LB_DetailsPanel,position);
 
         //To lane Buttons
-        BTN_ToLanesPanel.add(Label_ToLanesDetails);
-        BTN_ToLanesPanel.add(BTN_ToLane1);
-        BTN_ToLanesPanel.add(BTN_ToLane2);
-        BTN_ToLanesPanel.add(BTN_ToLane3);
-        position.gridx =1; position.gridy =0;
-        CenterPanel.add(BTN_ToLanesPanel,position);
+        ToLanesPanel.setLayout(new BoxLayout(ToLanesPanel,BoxLayout.Y_AXIS));
+        ToLanesPanel.add(Label_ToLanesDetails);
+        ToLanesPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        ToLanesPanel.add(BTN_ToLane1);
+        ToLanesPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        ToLanesPanel.add(BTN_ToLane2);
+        ToLanesPanel.add(Box.createRigidArea(new Dimension(0,10)));
+        ToLanesPanel.add(BTN_ToLane3);
+        position.gridx =1; position.gridy =0; position.fill = GridBagConstraints.CENTER;
+        CenterPanel.add(ToLanesPanel,position);
 
         //available planes
+        AvailablePlanesPanel.setLayout(new BoxLayout(AvailablePlanesPanel,BoxLayout.Y_AXIS));
         AvailablePlanesPanel.add(Label_AvailablePlanes);
         AvailablePlanesPanel.add(new JScrollPane(LB_AvailablePLanes));
         position.gridx =1; position.gridy =1;
         CenterPanel.add(AvailablePlanesPanel,position);
 
         //Sent planes
+        SentPlanesPanel.setLayout(new BoxLayout(SentPlanesPanel,BoxLayout.Y_AXIS));
         SentPlanesPanel.add(Label_SentPlanes);
         SentPlanesScroll.setViewportView(LB_SentPLanes);
         SentPlanesPanel.add(SentPlanesScroll);
@@ -378,8 +394,7 @@ public class AirportManagerGame extends JFrame {
         Lane1Bottom.add(Label_Lane1Status);
         Lane1.add(Lane1Bottom,BorderLayout.SOUTH);
 
-        Lane1Space.add(EmptyPanel);
-        Lane1Space.add(Lane1);
+
         for(int i = 1 ;i<=10; i++)
         {
             int intValue = (10000+i*1000);
@@ -388,6 +403,9 @@ public class AirportManagerGame extends JFrame {
         }
         Lane1DistancePanel.add(Label_Lane1DistanceLabel);
         Lane1DistancePanel.add(Lane1Distance);
+
+        Lane1Space.setLayout(new BoxLayout(Lane1Space,BoxLayout.Y_AXIS));
+        Lane1Space.add(Lane1);
         Lane1Space.add(Lane1DistancePanel);
 
         position.gridx = 2; position.gridy = 0;
@@ -404,8 +422,7 @@ public class AirportManagerGame extends JFrame {
         Lane2Bottom.add(Label_Lane2Status);
         Lane2.add(Lane2Bottom,BorderLayout.SOUTH);
 
-        Lane2Space.add(EmptyPanel);
-        Lane2Space.add(Lane2);
+
         for(int i = 1 ;i<=10; i++)
         {
             int intValue = (10000+i*1000);
@@ -414,7 +431,10 @@ public class AirportManagerGame extends JFrame {
         }
         Lane2DistancePanel.add(Label_Lane2DistanceLabel);
         Lane2DistancePanel.add(Lane2Distance);
-        Lane2Space.add(Lane2DistancePanel,BorderLayout.SOUTH);
+
+        Lane2Space.setLayout(new BoxLayout(Lane2Space,BoxLayout.Y_AXIS));
+        Lane2Space.add(Lane2);
+        Lane2Space.add(Lane2DistancePanel);
 
         position.gridx = 2; position.gridy = 1;
         CenterPanel.add(Lane2Space,position);
@@ -430,7 +450,6 @@ public class AirportManagerGame extends JFrame {
         Lane3Bottom.add(Label_Lane3Status);
         Lane3.add(Lane3Bottom,BorderLayout.SOUTH);
 
-        Lane3Space.add(EmptyPanel);
         Lane3Space.add(Lane3);
         for(int i = 1 ;i<=10; i++)
         {
@@ -440,6 +459,9 @@ public class AirportManagerGame extends JFrame {
         }
         Lane3DistancePanel.add(Label_Lane3DistanceLabel);
         Lane3DistancePanel.add(Lane3Distance);
+
+        Lane3Space.setLayout(new BoxLayout(Lane3Space,BoxLayout.Y_AXIS));
+        Lane3Space.add(Lane3);
         Lane3Space.add(Lane3DistancePanel);
 
         position.gridx = 2; position.gridy = 2;
@@ -456,10 +478,10 @@ public class AirportManagerGame extends JFrame {
         Lane1Buttons.add(Lane1BoardPanel);
 
         Lane1RefuelPanel.add(BTN_Lane1Refuel);
-        Lane1RefuelPanel.add(EmptyPanel);
+        Lane1RefuelPanel.add(new JPanel());
         Lane1Buttons.add(Lane1RefuelPanel);
 
-        Lane1RevenuePanel.add(Lane1Revenue);
+        Lane1RevenuePanel.add(Label_Lane1Revenue);
         Lane1RevenuePanel.add(Lane1RefuelPrice);
         Lane1Buttons.add(Lane1RevenuePanel);
 
@@ -476,10 +498,10 @@ public class AirportManagerGame extends JFrame {
         Lane2Buttons.add(Lane2BoardPanel);
 
         Lane2RefuelPanel.add(BTN_Lane2Refuel);
-        Lane2RefuelPanel.add(EmptyPanel);
+        Lane2RefuelPanel.add(new JPanel());
         Lane2Buttons.add(Lane2RefuelPanel);
 
-        Lane2RevenuePanel.add(Lane2Revenue);
+        Lane2RevenuePanel.add(Label_Lane2Revenue);
         Lane2RevenuePanel.add(Lane2RefuelPrice);
         Lane2Buttons.add(Lane2RevenuePanel);
 
@@ -498,10 +520,10 @@ public class AirportManagerGame extends JFrame {
         Lane3Buttons.add(Lane3BoardPanel);
 
         Lane3RefuelPanel.add(BTN_Lane3Refuel);
-        Lane3RefuelPanel.add(EmptyPanel);
+        Lane3RefuelPanel.add(new JPanel());
         Lane3Buttons.add(Lane3RefuelPanel);
 
-        Lane3RevenuePanel.add(Lane3Revenue);
+        Lane3RevenuePanel.add(Label_Lane3Revenue);
         Lane3RevenuePanel.add(Lane3RefuelPrice);
         Lane3Buttons.add(Lane3RevenuePanel);
 
