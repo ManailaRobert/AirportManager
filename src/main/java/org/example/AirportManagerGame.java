@@ -3,6 +3,8 @@ package org.example;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.text.MessageFormat;
@@ -158,11 +160,19 @@ public class AirportManagerGame extends JFrame {
 
         addConstraints();
         decorateUI();
+        addEvents();
         addUI();
         setVisible(true);
     }
 
-
+    private void addEvents(){
+        BTN_ShowShop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ShopWindow();
+            }
+        });
+    }
 
     private void addConstraints(){
     LB_PlaneDetails.setEnabled(false);
