@@ -1,6 +1,7 @@
 package org.example;
 
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 
 public class ShopWindow extends JFrame {
@@ -33,11 +34,14 @@ public class ShopWindow extends JFrame {
     JPanel detailsPanel = new JPanel();
     JPanel listDetailsPanel = new JPanel();
     JLabel Label_Details = new JLabel("Details");
-    JList LB_Details = new JList<>(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
+    JTextArea TB_Details = new JTextArea("Plane/Crew Details");
 
 
 
-
+    private void addConstraints(){
+        TB_Details.setEditable(false);
+        TB_Details.setCaret(new DefaultCaret(){@Override public void paint(Graphics g){}});
+    }
 
 
     public  ShopWindow(){
@@ -45,9 +49,11 @@ public class ShopWindow extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         setSize(900,500);
+        setResizable(false);
         BorderLayout layout = new BorderLayout(7,7);
         setLayout(layout);
 
+        addConstraints();
         decorateUI();
         addUI();
 
@@ -57,24 +63,16 @@ public class ShopWindow extends JFrame {
     private  void decorateUI(){
         Font f = new Font("Times New Roman",Font.BOLD,14);
 
-
-
-
-
-
         planesPanel.setPreferredSize(new Dimension(290,450));
         listPlanesPanel.setPreferredSize(new Dimension(290,400));
-        LB_Planes.setPreferredSize(new Dimension(290,400));
         planesLabelPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
         detailsPanel.setPreferredSize(new Dimension(290,450));
         listDetailsPanel.setPreferredSize(new Dimension(290,450));
-        LB_Details.setPreferredSize(new Dimension(290,400));
         Label_Details.setVerticalAlignment(SwingConstants.BOTTOM);
 
         crewPanel.setPreferredSize(new Dimension(290,450));
         listCrewPanel.setPreferredSize(new Dimension(290,450));
-        LB_Crew.setPreferredSize(new Dimension(290,400));
         crewLabelPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
 
@@ -92,7 +90,8 @@ public class ShopWindow extends JFrame {
         planesPanel.setLayout(new BoxLayout(planesPanel,BoxLayout.Y_AXIS));
         planesLabelPanel.add(Label_Planes);
         planesPanel.add(planesLabelPanel);
-        listPlanesPanel.add(LB_Planes);
+        listPlanesPanel.setLayout(new BoxLayout(listPlanesPanel,BoxLayout.Y_AXIS));
+        listPlanesPanel.add(new JScrollPane(LB_Planes));
         planesPanel.add(listPlanesPanel);
         BuyPlanesPanel.setLayout(new GridLayout(1,3));
         BuyPlanesPanel.add(new JLabel("Buy QTY:"));
@@ -106,14 +105,16 @@ public class ShopWindow extends JFrame {
         detailsPanel.setLayout(new GridLayout(3,1));
 
         detailsPanel.add(Label_Details);
-        listDetailsPanel.add(LB_Details);
+        listDetailsPanel.setLayout(new BoxLayout(listDetailsPanel,BoxLayout.Y_AXIS));
+        listDetailsPanel.add(new JScrollPane(TB_Details));
         detailsPanel.add(listDetailsPanel);
 
         //crew panel
         crewPanel.setLayout(new BoxLayout(crewPanel,BoxLayout.Y_AXIS));
         crewLabelPanel.add(Label_Crew);
         crewPanel.add(crewLabelPanel);
-        listCrewPanel.add(LB_Crew);
+        listCrewPanel.setLayout(new BoxLayout(listCrewPanel,BoxLayout.Y_AXIS));
+        listCrewPanel.add(new JScrollPane(LB_Crew));
         crewPanel.add(listCrewPanel);
         BuyCrewPanel.setLayout(new GridLayout(1,3));
         BuyCrewPanel.add(new JLabel("Buy QTY:"));

@@ -2,11 +2,9 @@ package org.example;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.text.MessageFormat;
 
 public class AirportManagerGame extends JFrame {
@@ -19,7 +17,7 @@ public class AirportManagerGame extends JFrame {
 
     JPanel LB_DetailsPanel = new JPanel();
     JLabel Label_PlaneDetails = new JLabel("Plane details:");
-    JList  LB_PlaneDetails = new JList(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
+    JTextArea  TB_PlaneDetails = new JTextArea("Plane details");
 
     //top UI
     JPanel topUI = new JPanel(new GridLayout(1,7));
@@ -46,7 +44,6 @@ public class AirportManagerGame extends JFrame {
     //sent planes
     JPanel SentPlanesPanel = new JPanel(new GridLayout(2,1));
     JLabel Label_SentPlanes = new JLabel("Enroute planes");
-    JScrollPane SentPlanesScroll= new JScrollPane(); //-----------------------------------------------------------------------------------------> Scroll pane
     JList  LB_SentPLanes = new JList(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
 
     //lane 1
@@ -155,6 +152,7 @@ public class AirportManagerGame extends JFrame {
         super("Airport Manager");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1500,700);
+        setResizable(false);
         BorderLayout mainGBY = new BorderLayout(7,7);
         setLayout(mainGBY);
 
@@ -172,22 +170,34 @@ public class AirportManagerGame extends JFrame {
                 new ShopWindow();
             }
         });
+
+        BTN_ShowAllCrew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new AllCrewWindow();
+            }
+        });
     }
 
     private void addConstraints(){
-    LB_PlaneDetails.setEnabled(false);
+        TB_PlaneDetails.setEditable(false);
+        TB_PlaneDetails.setCaret(new DefaultCaret(){@Override public void paint(Graphics g){}}); //
+        LB_SentPLanes.setSelectionModel(new DefaultListSelectionModel(){@Override public void setSelectionInterval(int index0,int index1){}});
     }
 
     private void decorateUI(){
         Font f = new Font("Times New Roman",Font.BOLD,14);
+
         //Awaiting planes
         Label_AwaitingPlanes.setFont(f);
+        LB_AwaitingPlanes.setFont(f);
         LB_AwaitingPlanes.setBackground(Color.LIGHT_GRAY);
         LB_AwaitingPlanesPanel.setPreferredSize(new Dimension(300,350));
         LB_AwaitingPlanesPanel.setBackground(Color.PINK);
         // Details
         Label_PlaneDetails.setFont(f);
-        LB_PlaneDetails.setBackground(Color.LIGHT_GRAY);
+        TB_PlaneDetails.setFont(f);
+        TB_PlaneDetails.setBackground(Color.LIGHT_GRAY);
         LB_DetailsPanel.setBackground(Color.PINK);
         //Top UI
         topUI.setBackground(Color.BLUE);
@@ -378,7 +388,7 @@ public class AirportManagerGame extends JFrame {
         //Label Details
         LB_DetailsPanel.setLayout(new BoxLayout(LB_DetailsPanel,BoxLayout.Y_AXIS));
         LB_DetailsPanel.add(Label_PlaneDetails);
-        LB_DetailsPanel.add(new JScrollPane(LB_PlaneDetails));
+        LB_DetailsPanel.add(new JScrollPane(TB_PlaneDetails));
         position.gridx = 0;position.gridy = 2;position.gridheight = 1;
         CenterPanel.add(LB_DetailsPanel,position);
 
@@ -404,8 +414,7 @@ public class AirportManagerGame extends JFrame {
         //Sent planes
         SentPlanesPanel.setLayout(new BoxLayout(SentPlanesPanel,BoxLayout.Y_AXIS));
         SentPlanesPanel.add(Label_SentPlanes);
-        SentPlanesScroll.setViewportView(LB_SentPLanes);
-        SentPlanesPanel.add(SentPlanesScroll);
+        SentPlanesPanel.add(new JScrollPane(LB_SentPLanes));
         position.gridx = 1; position.gridy=2;
         CenterPanel.add(SentPlanesPanel,position);
 
