@@ -63,22 +63,22 @@ public class ShopWindow extends JFrame {
     private  void decorateUI(){
         Font f = new Font("Times New Roman",Font.BOLD,14);
 
-        planesPanel.setPreferredSize(new Dimension(290,450));
+
         listPlanesPanel.setPreferredSize(new Dimension(290,400));
         planesLabelPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        BTN_BuyCrew.setFocusPainted(false);
+        BTN_BuyCrew.setBackground(Color.LIGHT_GRAY);
+        BTN_BuyCrew.setForeground(Color.black);
 
-        detailsPanel.setPreferredSize(new Dimension(290,450));
-        listDetailsPanel.setPreferredSize(new Dimension(290,450));
         Label_Details.setVerticalAlignment(SwingConstants.BOTTOM);
+        TB_Details.setFont(f);
 
-        crewPanel.setPreferredSize(new Dimension(290,450));
         listCrewPanel.setPreferredSize(new Dimension(290,450));
         crewLabelPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        BTN_BuyPlanes.setFocusPainted(false);
+        BTN_BuyPlanes.setBackground(Color.LIGHT_GRAY);
+        BTN_BuyPlanes.setForeground(Color.black);
 
-
-        listPlanesPanel.setBackground(Color.pink);
-        listDetailsPanel.setBackground(Color.pink);
-        listCrewPanel.setBackground(Color.pink);
     }
 
     private void addUI(){

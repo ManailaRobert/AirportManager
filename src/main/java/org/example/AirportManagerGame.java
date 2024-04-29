@@ -177,6 +177,25 @@ public class AirportManagerGame extends JFrame {
                 new AllCrewWindow();
             }
         });
+
+        BTN_Lane1Crew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new PlaneCrewWindow();
+            }
+        });
+        BTN_Lane2Crew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new PlaneCrewWindow();
+            }
+        });
+        BTN_Lane3Crew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new PlaneCrewWindow();
+            }
+        });
     }
 
     private void addConstraints(){
@@ -193,12 +212,12 @@ public class AirportManagerGame extends JFrame {
         LB_AwaitingPlanes.setFont(f);
         LB_AwaitingPlanes.setBackground(Color.LIGHT_GRAY);
         LB_AwaitingPlanesPanel.setPreferredSize(new Dimension(300,350));
-        LB_AwaitingPlanesPanel.setBackground(Color.PINK);
+
         // Details
         Label_PlaneDetails.setFont(f);
         TB_PlaneDetails.setFont(f);
         TB_PlaneDetails.setBackground(Color.LIGHT_GRAY);
-        LB_DetailsPanel.setBackground(Color.PINK);
+
         //Top UI
         topUI.setBackground(Color.BLUE);
         //Money
@@ -232,7 +251,7 @@ public class AirportManagerGame extends JFrame {
         Label_ToLanesDetails.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         ToLanesPanel.setPreferredSize(new Dimension(200,100));
-        ToLanesPanel.setBackground(Color.PINK);
+
 
         BTN_ToLane1.setFont(f);
         BTN_ToLane1.setFocusPainted(false);
@@ -262,7 +281,7 @@ public class AirportManagerGame extends JFrame {
         Label_AvailablePlanes.setBorder(new EmptyBorder(0,0,0,0));
         AvailablePlanesPanel.setBorder(new EmptyBorder(0,0,0,0));
         AvailablePlanesPanel.setPreferredSize(new Dimension(300,175));
-        AvailablePlanesPanel.setBackground(Color.PINK);
+
 
         // sent planes
         Label_SentPlanes.setFont(f);
@@ -271,10 +290,10 @@ public class AirportManagerGame extends JFrame {
         Label_SentPlanes.setBorder(new EmptyBorder(0,0,0,0));
         SentPlanesPanel.setBorder(new EmptyBorder(0,0,0,0));
         SentPlanesPanel.setPreferredSize(new Dimension(300,175));
-        SentPlanesPanel.setBackground(Color.PINK);
+
 
         //Lane 1
-        Lane1Space.setBackground(Color.PINK);
+
         Lane1Top.setBackground(Color.LIGHT_GRAY);
         Lane1Center.setBackground(Color.LIGHT_GRAY);
         Lane1Bottom.setBackground(Color.LIGHT_GRAY);
@@ -285,7 +304,7 @@ public class AirportManagerGame extends JFrame {
         Label_Lane1DistanceLabel.setFont(f);
 
         //lane 2
-        Lane2Space.setBackground(Color.PINK);
+
         Lane2Top.setBackground(Color.LIGHT_GRAY);
         Lane2Center.setBackground(Color.LIGHT_GRAY);
         Lane2Bottom.setBackground(Color.LIGHT_GRAY);
@@ -296,7 +315,6 @@ public class AirportManagerGame extends JFrame {
         Label_Lane2DistanceLabel.setFont(f);
 
         //lane 3
-        Lane3Space.setBackground(Color.PINK);
         Lane3Top.setBackground(Color.LIGHT_GRAY);
         Lane3Center.setBackground(Color.LIGHT_GRAY);
         Lane3Bottom.setBackground(Color.LIGHT_GRAY);
@@ -307,7 +325,7 @@ public class AirportManagerGame extends JFrame {
         Label_Lane3DistanceLabel.setFont(f);
 
         //Lane 1 buttons + Requirements
-        Lane1Buttons.setBackground(Color.PINK);
+
         BTN_Lane1Load.setFont(f);
         BTN_Lane1Board.setFont(f);
         BTN_Lane1Refuel.setFont(f);
@@ -325,7 +343,7 @@ public class AirportManagerGame extends JFrame {
 
         //Lane 2 Buttons + Requirements
         BTN_Lane2Depart.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Lane2Buttons.setBackground(Color.PINK);
+
         BTN_Lane2Load.setFont(f);
         BTN_Lane2Board.setFont(f);
         BTN_Lane2Refuel.setFont(f);
@@ -344,7 +362,7 @@ public class AirportManagerGame extends JFrame {
 
 
         //Lane 3 buttons + Requirements
-        Lane3Buttons.setBackground(Color.PINK);
+
         BTN_Lane3Load.setFont(f);
         BTN_Lane3Board.setFont(f);
         BTN_Lane3Refuel.setFont(f);
@@ -360,6 +378,17 @@ public class AirportManagerGame extends JFrame {
         Lane3RefuelPrice.setFont(f);
         Label_Lane3DepartTime.setFont(f);
 
+//        LB_AwaitingPlanesPanel.setBackground(Color.PINK);
+//        LB_DetailsPanel.setBackground(Color.PINK);
+//        ToLanesPanel.setBackground(Color.PINK);
+//        AvailablePlanesPanel.setBackground(Color.PINK);
+//        SentPlanesPanel.setBackground(Color.PINK);
+//        Lane1Space.setBackground(Color.PINK);
+//        Lane2Space.setBackground(Color.PINK);
+//        Lane3Space.setBackground(Color.PINK);
+//        Lane1Buttons.setBackground(Color.PINK);
+//        Lane2Buttons.setBackground(Color.PINK);
+//        Lane3Buttons.setBackground(Color.PINK);
     }
     private void addUI(){
 
@@ -368,8 +397,8 @@ public class AirportManagerGame extends JFrame {
         topUI.add(Label_AwaitingPasagers);
         topUI.add(Label_FuelHandlers);
         topUI.add(Label_BagageHandlers);
-        topUI.add(BTN_ShowAllCrew);
         topUI.add(BTN_ShowShop);
+        topUI.add(BTN_ShowAllCrew);
         topUI.add(Label_Trips);
         add(topUI,BorderLayout.NORTH);
 
