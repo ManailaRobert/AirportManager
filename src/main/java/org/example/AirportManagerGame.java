@@ -2,10 +2,15 @@ package org.example;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class AirportManagerGame extends JFrame {
 
@@ -13,7 +18,7 @@ public class AirportManagerGame extends JFrame {
     JPanel CenterPanel = new JPanel(new GridBagLayout());
     JPanel LB_AwaitingPlanesPanel = new JPanel();
     JLabel Label_AwaitingPlanes = new JLabel("Awaiting planes:");
-    JList LB_AwaitingPlanes = new JList<>(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
+    JList LB_AwaitingPlanes = new JList<>();
 
     JPanel LB_DetailsPanel = new JPanel();
     JLabel Label_PlaneDetails = new JLabel("Plane details:");
@@ -32,19 +37,19 @@ public class AirportManagerGame extends JFrame {
     // to lanes buttons
     JPanel ToLanesPanel = new JPanel();
     JLabel Label_ToLanesDetails = new JLabel("Select a lane.");
-    JButton BTN_ToLane1 = new JButton("To lane 1");
-    JButton BTN_ToLane2 = new JButton("To lane 2");
-    JButton BTN_ToLane3 = new JButton("To lane 3");
+    JButton BTN_ToLane1 = new JButton("Dock to lane 1");
+    JButton BTN_ToLane2 = new JButton("Dock to lane 2");
+    JButton BTN_ToLane3 = new JButton("Dock to lane 3");
 
-    // available planes
-    JPanel AvailablePlanesPanel = new JPanel(new GridLayout(2,1));
-    JLabel Label_AvailablePlanes = new JLabel("Available planes");
-    JList  LB_AvailablePLanes = new JList(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
+    // Idle planes
+    JPanel IdlePlanesPanel = new JPanel(new GridLayout(2,1));
+    JLabel Label_IdlePlanes = new JLabel("Idle planes");
+    JList  LB_IdlePlanes = new JList<>();
 
     //sent planes
     JPanel SentPlanesPanel = new JPanel(new GridLayout(2,1));
     JLabel Label_SentPlanes = new JLabel("Enroute planes");
-    JList  LB_SentPLanes = new JList(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
+    JList  LB_SentPlanes = new JList<>();
 
     //lane 1
     JPanel Lane1Space = new JPanel(new GridLayout(3,1));
@@ -55,12 +60,12 @@ public class AirportManagerGame extends JFrame {
     JPanel Lane1DistancePanel = new JPanel(new FlowLayout());
     JLabel Label_Lane1DistanceLabel = new JLabel("Distance:");
     JPanel Lane1Top = new JPanel(new GridLayout(1,2));
-    JLabel Label_Lane1PlaneName= new JLabel("Plane 1");
+    JLabel Label_Lane1PlaneName= new JLabel("------");
     JButton BTN_Lane1Crew  = new JButton("Crew");
     JPanel Lane1Bottom = new JPanel(new GridLayout(1,3));
-    JLabel Label_Lane1Fuel = new JLabel("Fuel: 100%");
-    JLabel Label_Lane1Passagers = new JLabel("Passagers: 34/100");
-    JLabel Label_Lane1Status = new JLabel("  Status: Bording");
+    JLabel Label_Lane1Fuel = new JLabel("Fuel: 0%");
+    JLabel Label_Lane1Passagers = new JLabel("Passagers: 0/0");
+    JLabel Label_Lane1Status = new JLabel("  Status: Not Ready");
 
     //lane 2
     JPanel Lane2Space = new JPanel(new GridLayout(3,1));
@@ -71,12 +76,12 @@ public class AirportManagerGame extends JFrame {
     JPanel Lane2DistancePanel = new JPanel(new FlowLayout());
     JLabel Label_Lane2DistanceLabel = new JLabel("Distance:");
     JPanel Lane2Top = new JPanel(new GridLayout(1,2));
-    JLabel Label_Lane2PlaneName= new JLabel("Plane 2");
+    JLabel Label_Lane2PlaneName= new JLabel("------");
     JButton BTN_Lane2Crew = new JButton("Crew");
     JPanel Lane2Bottom = new JPanel(new GridLayout(1,3));
-    JLabel Label_Lane2Fuel = new JLabel("Fuel: 100%");
-    JLabel Label_Lane2Passagers = new JLabel("Passagers: 34/100");
-    JLabel Label_Lane2Status = new JLabel("  Status: Bording");
+    JLabel Label_Lane2Fuel = new JLabel("Fuel: 0%");
+    JLabel Label_Lane2Passagers = new JLabel("Passagers: 0/0");
+    JLabel Label_Lane2Status = new JLabel("  Status: Not Ready");
 
     //lane 3
     JPanel Lane3Space = new JPanel(new GridLayout(3,1));
@@ -87,12 +92,12 @@ public class AirportManagerGame extends JFrame {
     JPanel Lane3DistancePanel = new JPanel(new FlowLayout());
     JLabel Label_Lane3DistanceLabel = new JLabel("Distance:");
     JPanel Lane3Top = new JPanel(new GridLayout(1,2));
-    JLabel Label_Lane3PlaneName= new JLabel("Plane 3");
+    JLabel Label_Lane3PlaneName= new JLabel("------");
     JButton BTN_Lane3Crew = new JButton("Crew");
     JPanel Lane3Bottom = new JPanel(new GridLayout(1,3));
-    JLabel Label_Lane3Fuel = new JLabel("Fuel: 100%");
-    JLabel Label_Lane3Passagers = new JLabel("Passagers: 34/100");
-    JLabel Label_Lane3Status = new JLabel("  Status: Bording");
+    JLabel Label_Lane3Fuel = new JLabel("Fuel: 0%");
+    JLabel Label_Lane3Passagers = new JLabel("Passagers: 0/0");
+    JLabel Label_Lane3Status = new JLabel("  Status: Not Ready");
 
     //lane 1 buttons
     JPanel Lane1Buttons = new JPanel(new GridLayout(5,1));
@@ -104,13 +109,13 @@ public class AirportManagerGame extends JFrame {
     JButton BTN_Lane1Load = new JButton("Load Bagages");
     JButton BTN_Lane1Board = new JButton("Board Passagers");
     JButton BTN_Lane1Refuel = new JButton("Refuel");
-    JLabel Label_Lane1Revenue = new JLabel("Revenue: ");
+    JLabel Label_Lane1Revenue = new JLabel("Revenue: ---");
     //lane 1 Requirements
-    JLabel Lane1BagageH = new JLabel("BagageHandlers: ");
-    JLabel Lane1FuelH = new JLabel("FuelHandlers: ");
-    JLabel Lane1RefuelPrice = new JLabel("Refuel Price:");
+    JLabel Lane1BagageH = new JLabel("Bagage Handlers: ---");
+    JLabel Lane1FuelH = new JLabel("Fuel Handlers: ---");
+    JLabel Lane1RefuelPrice = new JLabel("Refuel Price: ---");
     JButton BTN_Lane1Depart = new JButton("Depart");
-    JLabel Label_Lane1DepartTime = new JLabel("Time:");
+    JLabel Label_Lane1DepartTime = new JLabel("Time: ---");
 
     //lane 2 buttons
     JPanel Lane2Buttons = new JPanel(new GridLayout(5,1));
@@ -122,13 +127,13 @@ public class AirportManagerGame extends JFrame {
     JButton BTN_Lane2Load = new JButton("Load Bagages");
     JButton BTN_Lane2Board = new JButton("Board Passagers");
     JButton BTN_Lane2Refuel = new JButton("Refuel");
-    JLabel Label_Lane2Revenue = new JLabel("Revenue: ");
+    JLabel Label_Lane2Revenue = new JLabel("Revenue: ---");
     //lane 2 Requirements
-    JLabel Lane2BagageH = new JLabel("BagageHandlers: ");
-    JLabel Lane2FuelH = new JLabel("FuelHandlers: ");
-    JLabel Lane2RefuelPrice = new JLabel("Refuel Price:");
+    JLabel Lane2BagageH = new JLabel("Bagage Handlers: ---");
+    JLabel Lane2FuelH = new JLabel("Fuel Handlers: ---");
+    JLabel Lane2RefuelPrice = new JLabel("Refuel Price: ---");
     JButton BTN_Lane2Depart = new JButton("Depart");
-    JLabel Label_Lane2DepartTime = new JLabel("Time:");
+    JLabel Label_Lane2DepartTime = new JLabel("Time: ---");
 
     //lane 3 buttons
     JPanel Lane3Buttons = new JPanel(new GridLayout(5,1));
@@ -140,13 +145,13 @@ public class AirportManagerGame extends JFrame {
     JButton BTN_Lane3Load = new JButton("Load Bagages");
     JButton BTN_Lane3Board = new JButton("Board Passagers");
     JButton BTN_Lane3Refuel = new JButton("Refuel");
-    JLabel Label_Lane3Revenue = new JLabel("Revenue: ");
+    JLabel Label_Lane3Revenue = new JLabel("Revenue: ---");
     //lane 3 Requirements
-    JLabel Lane3BagageH = new JLabel("BagageHandlers: ");
-    JLabel Lane3FuelH = new JLabel("FuelHandlers: ");
-    JLabel Lane3RefuelPrice = new JLabel("Refuel Price:");
+    JLabel Lane3BagageH = new JLabel("Bagage Handlers: ---");
+    JLabel Lane3FuelH = new JLabel("Fuel Handlers: ---");
+    JLabel Lane3RefuelPrice = new JLabel("Refuel Price: ---");
     JButton BTN_Lane3Depart = new JButton("Depart");
-    JLabel Label_Lane3DepartTime = new JLabel("Time:");
+    JLabel Label_Lane3DepartTime = new JLabel("Time: ---");
 
     public AirportManagerGame(){
         super("Airport Manager");
@@ -161,8 +166,43 @@ public class AirportManagerGame extends JFrame {
         addEvents();
         addUI();
         setVisible(true);
+        InitializeGame();
     }
 
+
+    private DefaultListModel<Plane> AwaitingPlanesList= new DefaultListModel<>();
+    private DefaultListModel<Plane> IdlePlanesList = new DefaultListModel<>();
+    private DefaultListModel<Plane> SentPlanesList = new DefaultListModel<>();
+    private Plane Lane1Plane;
+    private Plane Lane2Plane;
+    private Plane Lane3Plane;
+    private  void InitializeGame(){
+
+        Lane1Plane = null;
+        Lane2Plane = null;
+        Lane3Plane = null;
+
+        LB_IdlePlanes.setModel(IdlePlanesList);
+        LB_SentPlanes.setModel(SentPlanesList);
+        LB_AwaitingPlanes.setModel(AwaitingPlanesList);
+
+        for(int i = 0; i <=10;i++){
+            Random random =new Random();
+            Plane plane = new Plane(random.nextInt(1,6));
+            IdlePlanesList.addElement(plane);
+        }
+
+        for(int i = 0; i <=5;i++){
+            Random random =new Random();
+            Plane plane = new Plane(random.nextInt(1,6));
+            AwaitingPlanesList.addElement(plane);
+        }
+
+        Label_AwaitingPlanes.setText("("+AwaitingPlanesList.getSize()+") Awaiting to dock planes:");
+        Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+
+    }
+    boolean updatingSelection = false;
     private void addEvents(){
         BTN_ShowShop.addActionListener(new ActionListener() {
             @Override
@@ -170,14 +210,12 @@ public class AirportManagerGame extends JFrame {
                 new ShopWindow();
             }
         });
-
         BTN_ShowAllCrew.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new AllCrewWindow();
             }
         });
-
         BTN_Lane1Crew.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -196,12 +234,197 @@ public class AirportManagerGame extends JFrame {
                 new PlaneCrewWindow();
             }
         });
+
+        BTN_ToLane1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if( Lane1Plane == null){
+                    if(LB_AwaitingPlanes.getSelectedValue() != null)
+                    {
+                        Lane1Plane = (Plane) LB_AwaitingPlanes.getSelectedValue();
+                        DisplayLane(Lane1Plane,1);
+                        AwaitingPlanesList.removeElement(Lane1Plane);
+                        BTN_ToLane1.setText("UnDock lane 1");
+                        Label_AwaitingPlanes.setText("("+AwaitingPlanesList.getSize()+") Awaiting to dock planes:");
+                    } else if (LB_IdlePlanes.getSelectedValue()!=null) {
+                        Lane1Plane = (Plane) LB_IdlePlanes.getSelectedValue();
+                        DisplayLane(Lane1Plane,1);
+                        IdlePlanesList.removeElement(Lane1Plane);
+                        BTN_ToLane1.setText("UnDock lane 1");
+                        Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                    }
+                }
+                else {
+                    IdlePlanesList.addElement(Lane1Plane);
+                    Lane1Plane = null;
+                    DisplayLane(Lane1Plane,1);
+                    BTN_ToLane1.setText("Dock to lane 1");
+                    Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                }
+            }
+        });
+        BTN_ToLane2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if( Lane2Plane == null){
+                    if(LB_AwaitingPlanes.getSelectedValue() != null)
+                    {
+                        Lane2Plane = (Plane) LB_AwaitingPlanes.getSelectedValue();
+                        DisplayLane(Lane2Plane,2);
+                        AwaitingPlanesList.removeElement(Lane2Plane);
+                        BTN_ToLane2.setText("UnDock lane 2");
+                        Label_AwaitingPlanes.setText("("+AwaitingPlanesList.getSize()+") Awaiting to dock planes:");
+                    } else if (LB_IdlePlanes.getSelectedValue()!=null) {
+                        Lane2Plane = (Plane) LB_IdlePlanes.getSelectedValue();
+                        DisplayLane(Lane2Plane,2);
+                        IdlePlanesList.removeElement(Lane2Plane);
+                        BTN_ToLane2.setText("UnDock lane 2");
+                        Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                    }
+                }
+                else {
+                    IdlePlanesList.addElement(Lane2Plane);
+                    Lane2Plane = null;
+                    DisplayLane(Lane2Plane,2);
+                    BTN_ToLane2.setText("Dock to lane 2");
+                    Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                }
+            }
+        });
+        BTN_ToLane3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if( Lane3Plane == null){
+                    if(LB_AwaitingPlanes.getSelectedValue() != null)
+                    {
+                        Lane3Plane = (Plane) LB_AwaitingPlanes.getSelectedValue();
+                        DisplayLane(Lane3Plane,3);
+                        AwaitingPlanesList.removeElement(Lane3Plane);
+                        BTN_ToLane3.setText("UnDock lane 3");
+                        Label_AwaitingPlanes.setText("("+AwaitingPlanesList.getSize()+") Awaiting to dock planes:");
+                    } else if (LB_IdlePlanes.getSelectedValue()!=null) {
+                        Lane3Plane = (Plane) LB_IdlePlanes.getSelectedValue();
+                        DisplayLane(Lane3Plane,3);
+                        IdlePlanesList.removeElement(Lane3Plane);
+                        BTN_ToLane3.setText("UnDock lane 3");
+                        Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                    }
+                }
+                else {
+                    IdlePlanesList.addElement(Lane3Plane);
+                    Lane3Plane = null;
+                    DisplayLane(Lane3Plane,3);
+                    BTN_ToLane3.setText("Dock to lane 3");
+                    Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                }
+            }
+        });
+
+
+        LB_AwaitingPlanes.addListSelectionListener(new ListSelectionListener() {
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if(!e.getValueIsAdjusting() && !updatingSelection)
+            {
+                updatingSelection = true;
+                LB_IdlePlanes.clearSelection();//fires list selection event
+                updatingSelection = false;
+                System.out.println("Awaiting Planes event");
+            }
+        }
+    });
+        LB_IdlePlanes.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(!e.getValueIsAdjusting() && !updatingSelection)
+                {
+                    updatingSelection = true;
+                    LB_AwaitingPlanes.clearSelection();//fires list selection event
+                    updatingSelection = false;
+                    System.out.println("Idle Planes event");
+                }
+            }
+        });
+
     }
 
+    private void DisplayLane(Plane plane,int lane){
+        if(plane !=null){
+            switch (lane){
+                case 1:
+                    Label_Lane1PlaneName.setText(plane.toString());
+                    Label_Lane1Passagers.setText("Passagers: "+plane.GetCurentPassagers()+"/"+ plane.GetMaxPassagers());
+                    Label_Lane1Fuel.setText("Fuel: "+(plane.IsFueled()?"100%":"0%"));
+                    Lane1FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
+                    Lane1BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
+                    Lane1RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
+                    Label_Lane1Revenue.setText("Revenue: 0 $");
+                    int departTime1 = (Lane1Distance.getSelectedIndex()+1)*10;
+                    Label_Lane1DepartTime.setText("Time: "+departTime1+" Hr (Sec)");
+
+                    break;
+                case 2:
+                    Label_Lane2PlaneName.setText(plane.toString());
+                    Label_Lane2Passagers.setText("Passagers: "+plane.GetCurentPassagers()+"/"+ plane.GetMaxPassagers());
+                    Label_Lane2Fuel.setText("Fuel: "+(plane.IsFueled()?"100%":"0%"));
+                    Lane2FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
+                    Lane2BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
+                    Lane2RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
+                    Label_Lane2Revenue.setText("Revenue: 0 $");
+                    int departTime2 = (Lane2Distance.getSelectedIndex()+1)*10;
+                    Label_Lane2DepartTime.setText("Time: "+departTime2+" Hr (Sec)");
+                    break;
+                case 3:
+                    Label_Lane3PlaneName.setText(plane.toString());
+                    Label_Lane3Passagers.setText("Passagers: "+plane.GetCurentPassagers()+"/"+ plane.GetMaxPassagers());
+                    Label_Lane3Fuel.setText("Fuel: "+(plane.IsFueled()?"100%":"0%"));
+                    Lane3FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
+                    Lane3BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
+                    Lane3RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
+                    Label_Lane3Revenue.setText("Revenue: 0 $");
+                    int departTime3 = (Lane2Distance.getSelectedIndex()+1)*10;
+                    Label_Lane3DepartTime.setText("Time: "+departTime3+" Hr (Sec)");
+                    break;
+            }
+        }else {
+            switch (lane){
+                case 1:
+                    Label_Lane1PlaneName.setText("------");
+                    Label_Lane1Passagers.setText("Passagers: 0/0");
+                    Label_Lane1Fuel.setText("Fuel: 0%");
+                    Lane1FuelH.setText("Fuel Handlers: ---");
+                    Lane1BagageH.setText("Bagage Handlers: ---");
+                    Lane1RefuelPrice.setText("Refuel price: ---");
+                    Label_Lane1Revenue.setText("Revenue: --- $");
+                    Label_Lane1DepartTime.setText("Time: ---");
+                    break;
+                case 2:
+                    Label_Lane2PlaneName.setText("------");
+                    Label_Lane2Passagers.setText("Passagers: 0/0");
+                    Label_Lane2Fuel.setText("Fuel: 0%");
+                    Lane2FuelH.setText("Fuel Handlers: ---");
+                    Lane2BagageH.setText("Bagage Handlers: ---");
+                    Lane2RefuelPrice.setText("Refuel price: ---");
+                    Label_Lane2Revenue.setText("Revenue: --- $");
+                    Label_Lane2DepartTime.setText("Time: ---");
+                    break;
+                case 3:
+                    Label_Lane3PlaneName.setText("------");
+                    Label_Lane3Passagers.setText("Passagers: 0/0");
+                    Label_Lane3Fuel.setText("Fuel: 0%");
+                    Lane3FuelH.setText("Fuel Handlers: ---");
+                    Lane3BagageH.setText("Bagage Handlers: ---");
+                    Lane3RefuelPrice.setText("Refuel price: ---");
+                    Label_Lane3Revenue.setText("Revenue: --- $");
+                    Label_Lane3DepartTime.setText("Time: ---");
+                    break;
+            }
+        }
+    }
     private void addConstraints(){
         TB_PlaneDetails.setEditable(false);
         TB_PlaneDetails.setCaret(new DefaultCaret(){@Override public void paint(Graphics g){}}); //
-        LB_SentPLanes.setSelectionModel(new DefaultListSelectionModel(){@Override public void setSelectionInterval(int index0,int index1){}});
+        LB_SentPlanes.setSelectionModel(new DefaultListSelectionModel(){@Override public void setSelectionInterval(int index0,int index1){}});
     }
 
     private void decorateUI(){
@@ -274,19 +497,19 @@ public class AirportManagerGame extends JFrame {
         BTN_ToLane3.setPreferredSize(new Dimension(100,15));
         BTN_ToLane3.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // available planes
-        Label_AvailablePlanes.setFont(f);
-        LB_AvailablePLanes.setBackground(Color.LIGHT_GRAY);
-        LB_AvailablePLanes.setFont(f);
-        Label_AvailablePlanes.setBorder(new EmptyBorder(0,0,0,0));
-        AvailablePlanesPanel.setBorder(new EmptyBorder(0,0,0,0));
-        AvailablePlanesPanel.setPreferredSize(new Dimension(300,175));
+        // Idle planes
+        Label_IdlePlanes.setFont(f);
+        LB_IdlePlanes.setBackground(Color.LIGHT_GRAY);
+        LB_IdlePlanes.setFont(f);
+        Label_IdlePlanes.setBorder(new EmptyBorder(0,0,0,0));
+        IdlePlanesPanel.setBorder(new EmptyBorder(0,0,0,0));
+        IdlePlanesPanel.setPreferredSize(new Dimension(300,175));
 
 
         // sent planes
         Label_SentPlanes.setFont(f);
-        LB_SentPLanes.setBackground(Color.LIGHT_GRAY);
-        LB_SentPLanes.setFont(f);
+        LB_SentPlanes.setBackground(Color.LIGHT_GRAY);
+        LB_SentPlanes.setFont(f);
         Label_SentPlanes.setBorder(new EmptyBorder(0,0,0,0));
         SentPlanesPanel.setBorder(new EmptyBorder(0,0,0,0));
         SentPlanesPanel.setPreferredSize(new Dimension(300,175));
@@ -381,7 +604,7 @@ public class AirportManagerGame extends JFrame {
 //        LB_AwaitingPlanesPanel.setBackground(Color.PINK);
 //        LB_DetailsPanel.setBackground(Color.PINK);
 //        ToLanesPanel.setBackground(Color.PINK);
-//        AvailablePlanesPanel.setBackground(Color.PINK);
+//        IdlePlanesPanel.setBackground(Color.PINK);
 //        SentPlanesPanel.setBackground(Color.PINK);
 //        Lane1Space.setBackground(Color.PINK);
 //        Lane2Space.setBackground(Color.PINK);
@@ -433,26 +656,26 @@ public class AirportManagerGame extends JFrame {
         position.gridx =1; position.gridy =0; position.fill = GridBagConstraints.CENTER;
         CenterPanel.add(ToLanesPanel,position);
 
-        //available planes
-        AvailablePlanesPanel.setLayout(new BoxLayout(AvailablePlanesPanel,BoxLayout.Y_AXIS));
-        AvailablePlanesPanel.add(Label_AvailablePlanes);
-        AvailablePlanesPanel.add(new JScrollPane(LB_AvailablePLanes));
+        //Idle planes
+        IdlePlanesPanel.setLayout(new BoxLayout(IdlePlanesPanel,BoxLayout.Y_AXIS));
+        IdlePlanesPanel.add(Label_IdlePlanes);
+        IdlePlanesPanel.add(new JScrollPane(LB_IdlePlanes));
         position.gridx =1; position.gridy =1;
-        CenterPanel.add(AvailablePlanesPanel,position);
+        CenterPanel.add(IdlePlanesPanel,position);
 
         //Sent planes
         SentPlanesPanel.setLayout(new BoxLayout(SentPlanesPanel,BoxLayout.Y_AXIS));
         SentPlanesPanel.add(Label_SentPlanes);
-        SentPlanesPanel.add(new JScrollPane(LB_SentPLanes));
+        SentPlanesPanel.add(new JScrollPane(LB_SentPlanes));
         position.gridx = 1; position.gridy=2;
         CenterPanel.add(SentPlanesPanel,position);
 
 
         //lane 1
-        Lane1Top.add(Label_Lane1PlaneName);
+        Lane1Top.add(Label_Lane1);
         Lane1Top.add(BTN_Lane1Crew );
         Lane1.add(Lane1Top,BorderLayout.NORTH);
-        Lane1Center.add(Label_Lane1);
+        Lane1Center.add(Label_Lane1PlaneName);
         Lane1.add(Lane1Center,BorderLayout.CENTER);
         Lane1Bottom.add(Label_Lane1Fuel);
         Lane1Bottom.add(Label_Lane1Passagers);
@@ -477,10 +700,10 @@ public class AirportManagerGame extends JFrame {
         CenterPanel.add(Lane1Space,position);
 
         //lane 2
-        Lane2Top.add(Label_Lane2PlaneName);
+        Lane2Top.add(Label_Lane2 );
         Lane2Top.add(BTN_Lane2Crew);
         Lane2.add(Lane2Top,BorderLayout.NORTH);
-        Lane2Center.add(Label_Lane2);
+        Lane2Center.add(Label_Lane2PlaneName);
         Lane2.add(Lane2Center,BorderLayout.CENTER);
         Lane2Bottom.add(Label_Lane2Fuel);
         Lane2Bottom.add(Label_Lane2Passagers);
@@ -505,10 +728,10 @@ public class AirportManagerGame extends JFrame {
         CenterPanel.add(Lane2Space,position);
 
         //lane 3
-        Lane3Top.add(Label_Lane3PlaneName);
+        Lane3Top.add(Label_Lane3);
         Lane3Top.add(BTN_Lane3Crew);
         Lane3.add(Lane3Top,BorderLayout.NORTH);
-        Lane3Center.add(Label_Lane3);
+        Lane3Center.add(Label_Lane3PlaneName);
         Lane3.add(Lane3Center,BorderLayout.CENTER);
         Lane3Bottom.add(Label_Lane3Fuel);
         Lane3Bottom.add(Label_Lane3Passagers);
