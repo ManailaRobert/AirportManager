@@ -41,7 +41,7 @@ public class PlaneCrewWindow extends JFrame{
         super("CrewWindow");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        setSize(700,500);
+        setSize(700,350);
         setResizable(false);
         GridLayout layout = new GridLayout(1,2);
         setLayout(layout);
