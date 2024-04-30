@@ -201,6 +201,52 @@ public class AirportManagerGame extends JFrame {
         Label_AwaitingPlanes.setText("("+AwaitingPlanesList.getSize()+") Awaiting to dock planes:");
         Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
 
+
+        initLaneButtons(1,false);
+        initLaneButtons(2,false);
+        initLaneButtons(3,false);
+        BTN_Lane1Depart.setEnabled(false);
+        BTN_Lane2Depart.setEnabled(false);
+        BTN_Lane3Depart.setEnabled(false);
+
+    }
+
+
+    private void initLaneButtons(int lane,boolean boolValue){
+        switch (lane){
+            case 1:
+                BTN_Lane1Crew.setEnabled(boolValue);
+                BTN_Lane1Board.setEnabled(boolValue);
+                BTN_Lane1Load.setEnabled(boolValue);
+                BTN_Lane1Refuel.setEnabled(boolValue);
+                break;
+            case 2:
+                BTN_Lane2Crew.setEnabled(boolValue);
+                BTN_Lane2Board.setEnabled(boolValue);
+                BTN_Lane2Load.setEnabled(boolValue);
+                BTN_Lane2Refuel.setEnabled(boolValue);
+                break;
+            case 3:
+                BTN_Lane3Crew.setEnabled(boolValue);
+                BTN_Lane3Board.setEnabled(boolValue);
+                BTN_Lane3Load.setEnabled(boolValue);
+                BTN_Lane3Refuel.setEnabled(boolValue);
+                break;
+        }
+    }
+    private  void verifyDepart(int lane, Plane plane){
+        if(plane.IsEligibleToFly())
+            switch (lane){
+                case 1:
+                    BTN_Lane1Depart.setEnabled(true);
+                    break;
+                case 2:
+                    BTN_Lane2Depart.setEnabled(true);
+                    break;
+                case 3:
+                    BTN_Lane3Depart.setEnabled(true);
+                    break;
+            }
     }
     boolean updatingSelection = false;
     private void addEvents(){
@@ -235,6 +281,7 @@ public class AirportManagerGame extends JFrame {
             }
         });
 
+        //to lanes btns
         BTN_ToLane1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -246,12 +293,14 @@ public class AirportManagerGame extends JFrame {
                         AwaitingPlanesList.removeElement(Lane1Plane);
                         BTN_ToLane1.setText("UnDock lane 1");
                         Label_AwaitingPlanes.setText("("+AwaitingPlanesList.getSize()+") Awaiting to dock planes:");
+                        initLaneButtons(1,true);
                     } else if (LB_IdlePlanes.getSelectedValue()!=null) {
                         Lane1Plane = (Plane) LB_IdlePlanes.getSelectedValue();
                         DisplayLane(Lane1Plane,1);
                         IdlePlanesList.removeElement(Lane1Plane);
                         BTN_ToLane1.setText("UnDock lane 1");
                         Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                        initLaneButtons(1,true);
                     }
                 }
                 else {
@@ -260,6 +309,7 @@ public class AirportManagerGame extends JFrame {
                     DisplayLane(Lane1Plane,1);
                     BTN_ToLane1.setText("Dock to lane 1");
                     Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                    initLaneButtons(1,false);
                 }
             }
         });
@@ -274,12 +324,14 @@ public class AirportManagerGame extends JFrame {
                         AwaitingPlanesList.removeElement(Lane2Plane);
                         BTN_ToLane2.setText("UnDock lane 2");
                         Label_AwaitingPlanes.setText("("+AwaitingPlanesList.getSize()+") Awaiting to dock planes:");
+                        initLaneButtons(2,true);
                     } else if (LB_IdlePlanes.getSelectedValue()!=null) {
                         Lane2Plane = (Plane) LB_IdlePlanes.getSelectedValue();
                         DisplayLane(Lane2Plane,2);
                         IdlePlanesList.removeElement(Lane2Plane);
                         BTN_ToLane2.setText("UnDock lane 2");
                         Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                        initLaneButtons(2,true);
                     }
                 }
                 else {
@@ -288,6 +340,7 @@ public class AirportManagerGame extends JFrame {
                     DisplayLane(Lane2Plane,2);
                     BTN_ToLane2.setText("Dock to lane 2");
                     Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                    initLaneButtons(2,false);
                 }
             }
         });
@@ -302,12 +355,14 @@ public class AirportManagerGame extends JFrame {
                         AwaitingPlanesList.removeElement(Lane3Plane);
                         BTN_ToLane3.setText("UnDock lane 3");
                         Label_AwaitingPlanes.setText("("+AwaitingPlanesList.getSize()+") Awaiting to dock planes:");
+                        initLaneButtons(3,true);
                     } else if (LB_IdlePlanes.getSelectedValue()!=null) {
                         Lane3Plane = (Plane) LB_IdlePlanes.getSelectedValue();
                         DisplayLane(Lane3Plane,3);
                         IdlePlanesList.removeElement(Lane3Plane);
                         BTN_ToLane3.setText("UnDock lane 3");
                         Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                        initLaneButtons(3,true);
                     }
                 }
                 else {
@@ -316,11 +371,110 @@ public class AirportManagerGame extends JFrame {
                     DisplayLane(Lane3Plane,3);
                     BTN_ToLane3.setText("Dock to lane 3");
                     Label_IdlePlanes.setText("("+IdlePlanesList.getSize()+") Idle planes: ");
+                    initLaneButtons(3,false);
                 }
             }
         });
 
+        // btn lanes ----------------------------------------------------------------> work in progress
+        BTN_Lane1Load.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //verify crew
+                //timer
+                //verifyDepart(1,Lane1Plane)
+            }
+        });
+        BTN_Lane1Board.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //verify crew
+                //timer
+                //verifyDepart(1,Lane1Plane)
+            }
+        });
+        BTN_Lane1Refuel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //verify money
+                //timer
+                //verifyDepart(1,Lane1Plane)
+            }
+        });
+        BTN_Lane2Load.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //verify crew
+                //timer
+                //verifyDepart(2,Lane2Plane)
+            }
+        });
+        BTN_Lane2Board.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //verify crew
+                //timer
+                //verifyDepart(2,Lane2Plane)
+            }
+        });
+        BTN_Lane2Refuel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //verify money
+                //timer
+                //verifyDepart(2,Lane2Plane)
+            }
+        });
+        BTN_Lane3Load.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //verify crew
+                //timer
+                //verifyDepart(3,Lane3Plane)
+            }
+        });
+        BTN_Lane3Board.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //verify crew
+                //timer
+                //verifyDepart(3,Lane3Plane)
+            }
+        });
+        BTN_Lane3Refuel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //verify money
+                //timer
+                //verifyDepart(3,Lane3Plane)
+            }
+        });
+        BTN_Lane1Depart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // verify crew
+                //send plane to enroute planes
+                //start timer until the plane is put back to awaiting planes
+            }
+        });
+        BTN_Lane2Depart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // verify crew
+                //send plane to enroute planes
+                //start timer until the plane is put back to awaiting planes
+            }
+        });
+        BTN_Lane3Depart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // verify crew
+                //send plane to enroute planes
+                //start timer until the plane is put back to awaiting planes
+            }
+        });
 
+        // LB
         LB_AwaitingPlanes.addListSelectionListener(new ListSelectionListener() {
         @Override
         public void valueChanged(ListSelectionEvent e) {
@@ -425,6 +579,7 @@ public class AirportManagerGame extends JFrame {
         TB_PlaneDetails.setEditable(false);
         TB_PlaneDetails.setCaret(new DefaultCaret(){@Override public void paint(Graphics g){}}); //
         LB_SentPlanes.setSelectionModel(new DefaultListSelectionModel(){@Override public void setSelectionInterval(int index0,int index1){}});
+
     }
 
     private void decorateUI(){
