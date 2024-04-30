@@ -115,6 +115,7 @@ public class AirportManagerGame extends JFrame {
     JLabel Lane1FuelH = new JLabel("Fuel Handlers: ---");
     JLabel Lane1RefuelPrice = new JLabel("Refuel Price: ---");
     JButton BTN_Lane1Depart = new JButton("Depart");
+    JLabel Label_Lane1Error = new JLabel();
     JLabel Label_Lane1DepartTime = new JLabel("Time: ---");
 
     //lane 2 buttons
@@ -133,6 +134,7 @@ public class AirportManagerGame extends JFrame {
     JLabel Lane2FuelH = new JLabel("Fuel Handlers: ---");
     JLabel Lane2RefuelPrice = new JLabel("Refuel Price: ---");
     JButton BTN_Lane2Depart = new JButton("Depart");
+    JLabel Label_Lane2Error = new JLabel();
     JLabel Label_Lane2DepartTime = new JLabel("Time: ---");
 
     //lane 3 buttons
@@ -151,6 +153,7 @@ public class AirportManagerGame extends JFrame {
     JLabel Lane3FuelH = new JLabel("Fuel Handlers: ---");
     JLabel Lane3RefuelPrice = new JLabel("Refuel Price: ---");
     JButton BTN_Lane3Depart = new JButton("Depart");
+    JLabel Label_Lane3Error = new JLabel();
     JLabel Label_Lane3DepartTime = new JLabel("Time: ---");
 
     public AirportManagerGame(){
@@ -177,6 +180,10 @@ public class AirportManagerGame extends JFrame {
     private Plane Lane2Plane;
     private Plane Lane3Plane;
     private  void InitializeGame(){
+
+//        Label_Lane1Error.setText("Error");
+//        Label_Lane2Error.setText("Error");
+//        Label_Lane3Error.setText("Error");
 
         Lane1Plane = null;
         Lane2Plane = null;
@@ -719,6 +726,9 @@ public class AirportManagerGame extends JFrame {
         Lane1RefuelPrice.setFont(f);
         Label_Lane1DepartTime.setFont(f);
 
+        Label_Lane1Error.setFont(f);
+        Label_Lane1Error.setForeground(Color.RED);
+
         //Lane 2 Buttons + Requirements
         BTN_Lane2Depart.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -738,6 +748,9 @@ public class AirportManagerGame extends JFrame {
         Lane2RefuelPrice.setFont(f);
         Label_Lane2DepartTime.setFont(f);
 
+        Label_Lane2Error.setFont(f);
+        Label_Lane2Error.setForeground(Color.RED);
+
 
         //Lane 3 buttons + Requirements
 
@@ -755,6 +768,9 @@ public class AirportManagerGame extends JFrame {
         Lane3FuelH.setFont(f);
         Lane3RefuelPrice.setFont(f);
         Label_Lane3DepartTime.setFont(f);
+
+        Label_Lane3Error.setFont(f);
+        Label_Lane3Error.setForeground(Color.RED);
 
 //        LB_AwaitingPlanesPanel.setBackground(Color.PINK);
 //        LB_DetailsPanel.setBackground(Color.PINK);
@@ -930,7 +946,7 @@ public class AirportManagerGame extends JFrame {
         Lane1Buttons.add(BTN_Lane1Depart);
 
         Lane1DepartPanel.add(BTN_Lane1Depart);
-        Lane1DepartPanel.add(new JPanel());
+        Lane1DepartPanel.add(Label_Lane1Error);
         Lane1Buttons.add(Lane1DepartPanel);
 
         position.gridx = 3; position.gridy = 0;
@@ -954,7 +970,7 @@ public class AirportManagerGame extends JFrame {
         Lane2Buttons.add(Lane2RevenuePanel);
 
         Lane2DepartPanel.add(BTN_Lane2Depart);
-        Lane2DepartPanel.add(new JPanel());
+        Lane2DepartPanel.add(Label_Lane2Error);
         Lane2Buttons.add(Lane2DepartPanel);
 
         position.gridx = 3; position.gridy = 1;
@@ -979,7 +995,7 @@ public class AirportManagerGame extends JFrame {
         Lane3Buttons.add(Lane3RevenuePanel);
 
         Lane3DepartPanel.add(BTN_Lane3Depart);
-        Lane3DepartPanel.add(new JPanel());
+        Lane3DepartPanel.add(Label_Lane3Error);
         Lane3Buttons.add(Lane3DepartPanel);
 
         position.gridx = 3; position.gridy = 2;
