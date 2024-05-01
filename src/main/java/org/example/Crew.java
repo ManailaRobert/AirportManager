@@ -8,10 +8,12 @@ public class Crew {
     protected String Name;
     private boolean Available;
 
+    protected int Price;
+
     public boolean IsAvailable(){
         return Available;
     }
-    public void Availability(boolean availability){
+    public void SetAvailability(boolean availability){
         Available = availability;
     }
     public Crew(){
@@ -30,11 +32,14 @@ public class Crew {
 
         Random random = new Random();
 
-        int i = random.nextInt(30);
-        int j = random.nextInt(30);
+        int i = random.nextInt(firstNames.length);
+        int j = random.nextInt(lastNames.length);
 
         Name = firstNames[i] + " "+ lastNames[j];
         Available = true;
     }
 
+    public int getPrice() {
+        return Price;
+    }
 }

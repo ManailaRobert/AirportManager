@@ -7,6 +7,7 @@ public class Pilot extends Crew{
 
     public Pilot(){
         super();
+        super.Price = 1000;
         Type ="Pilot";
     }
 

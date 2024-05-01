@@ -4,6 +4,7 @@ public class FuelHandler extends Crew{
     private String Type ;
     public FuelHandler(){
         super();
+        super.Price = 150;
         Type = "FuelHandler";
     }
 

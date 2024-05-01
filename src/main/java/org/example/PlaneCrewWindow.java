@@ -37,8 +37,15 @@ public class PlaneCrewWindow extends JFrame{
     JButton BTN_Assign = new JButton("Assign");
     JButton BTN_Save = new JButton("Save");
 
-    public  PlaneCrewWindow(){
+    Plane CurentPlane;
+    Game Game;
+    AirportManagerGame MainWindow;
+    public  PlaneCrewWindow(Plane plane,Game game,AirportManagerGame mainWindow){
         super("CrewWindow");
+        CurentPlane = plane;
+        Game= game;
+        MainWindow = mainWindow;
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         setSize(700,350);

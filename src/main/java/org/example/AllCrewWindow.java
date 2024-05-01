@@ -15,9 +15,12 @@ public class AllCrewWindow extends JFrame {
     JLabel Label_DispatchedCrew = new JLabel("Dispatched crew:");
     JTable DispatchedCrewTable = new JTable(10,5);
 
-
-    public  AllCrewWindow(){
+    Game Game;
+    AirportManagerGame MainWindow;
+    public  AllCrewWindow(Game game,AirportManagerGame mainWindow){
         super("CrewWindow");
+        Game = game;
+        MainWindow = mainWindow;
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         setSize(900,500);

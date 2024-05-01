@@ -4,6 +4,7 @@ public class FlightAtendent extends Crew{
     private String Type ;
     public FlightAtendent(){
         super();
+        super.Price = 250;
         Type = "FlightAtendent";
     }
 

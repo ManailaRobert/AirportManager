@@ -5,6 +5,7 @@ public class BagageHandler extends Crew{
     private String Type ;
     public  BagageHandler(){
         super();
+        super.Price = 100;
         Type = "BagageHandler";
     }
 
