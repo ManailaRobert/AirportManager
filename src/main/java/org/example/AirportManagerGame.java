@@ -201,23 +201,37 @@ public class AirportManagerGame extends JFrame {
         LB_SentPlanes.setModel(PlaneList.SentPlanesListModel);
         LB_AwaitingPlanes.setModel(PlaneList.AwaitingPlanesListModel);
 
-        for(int i = 0; i <=10;i++){
+        //dummy data
+        for(int i = 1; i <=10;i++){
             Random random =new Random();
             Plane plane = new Plane(random.nextInt(1,6));
             PlaneList.IdlePlanesListModel.addElement(plane);
             PlaneList.AllPlanes.add(plane);
-
         }
 
-        for(int i = 0; i <=5;i++){
+        for(int i = 1; i <=5;i++){
             Random random =new Random();
             Plane plane = new Plane(random.nextInt(1,6));
             PlaneList.AwaitingPlanesListModel.addElement(plane);
             PlaneList.AllPlanes.add(plane);
         }
+        for(int i = 1; i <=10;i++){
+            Pilot pilot = new Pilot();
+            CrewList.add(pilot);
+        }
+        for(int i = 1; i <=16;i++){
+            FlightAtendent flightAtendent = new FlightAtendent();
+            CrewList.add(flightAtendent);
+        }
+        for(int i = 1; i <=10;i++){
+            BagageHandler bagageHandler = new BagageHandler();
+            CrewList.add(bagageHandler);
+        }
+        for(int i = 1; i <=10;i++){
+            FuelHandler fuelHandler = new FuelHandler();
+            CrewList.add(fuelHandler);
+        }
 
-        Label_AwaitingPlanes.setText("("+PlaneList.AwaitingPlanesListModel.getSize()+") Awaiting to dock planes:");
-        Label_IdlePlanes.setText("("+PlaneList.IdlePlanesListModel.getSize()+") Idle planes: ");
 
 
         initLaneButtons(1,false);
@@ -875,8 +889,8 @@ public class AirportManagerGame extends JFrame {
         ResourcesPanel.add(Label_Planes);
         ResourcesPanel.add(Label_Pilots);
         ResourcesPanel.add(Label_FlightAtendents);
-        ResourcesPanel.add(Label_FuelHandlers);
         ResourcesPanel.add(Label_BagageHandlers);
+        ResourcesPanel.add(Label_FuelHandlers);
         ResourcesPanel.add(Label_Trips);
 
         ButtonsPanel.add(BTN_ShowShop);

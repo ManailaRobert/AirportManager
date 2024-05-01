@@ -1,11 +1,13 @@
 package org.example;
 
+import java.text.MessageFormat;
+
 public class FlightAtendent extends Crew{
-    private String Type ;
+
     public FlightAtendent(){
         super();
-        super.Price = 250;
-        Type = "FlightAtendent";
+        Price = 250;
+        Type = "Flight Atendent";
     }
 
 
@@ -15,6 +17,6 @@ public class FlightAtendent extends Crew{
 
     @Override
     public String toString() {
-        return Name + " (Flight Atendent)";
+        return MessageFormat.format("{0} ({1})",Type,Name);
     }
 }

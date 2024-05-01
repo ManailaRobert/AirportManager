@@ -7,9 +7,10 @@ public class Crew {
 
     protected String Name;
     private boolean Available;
-
+    protected String Type ;
     protected int Price;
 
+    private Plane AssignedPlane;
     public boolean IsAvailable(){
         return Available;
     }
@@ -37,9 +38,21 @@ public class Crew {
 
         Name = firstNames[i] + " "+ lastNames[j];
         Available = true;
+        AssignedPlane = null;
     }
 
     public int getPrice() {
         return Price;
+    }
+
+    public Plane getAssignedPlane() {
+        return AssignedPlane;
+    }
+
+    public void setAssignedPlane(Plane assignedPlane) {
+        AssignedPlane = assignedPlane;
+    }
+    public String getName(){
+        return Name;
     }
 }

@@ -1,11 +1,13 @@
 package org.example;
 
+import java.text.MessageFormat;
+
 public class FuelHandler extends Crew{
-    private String Type ;
+
     public FuelHandler(){
         super();
-        super.Price = 150;
-        Type = "FuelHandler";
+        Price = 150;
+        Type = "Fuel Handler";
     }
 
 
@@ -14,6 +16,6 @@ public class FuelHandler extends Crew{
     }
     @Override
     public String toString() {
-        return Name + " (Fuel Handler)";
+        return MessageFormat.format("{0} ({1})",Type,Name);
     }
 }

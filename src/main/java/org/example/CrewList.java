@@ -9,11 +9,13 @@ public class CrewList {
     public List<FlightAtendent> FlightAtendentList;
     public List<BagageHandler> BagageHandlerList;
     public List<FuelHandler> FuelHandlerList;
+    private List<Crew> crewList;
     public CrewList(){
         PilotList = new ArrayList<>();
         FlightAtendentList = new ArrayList<>();
         BagageHandlerList = new ArrayList<>();
         FuelHandlerList = new ArrayList<>();
+        crewList = new ArrayList<>();
     }
 
     public void add(Crew crew){
@@ -22,8 +24,30 @@ public class CrewList {
         }else if (crew instanceof BagageHandler) {BagageHandlerList.add((BagageHandler) crew);
         }else if (crew instanceof FuelHandler) {FuelHandlerList.add((FuelHandler) crew);
         }
+        crewList.add(crew);
     }
 
+    public int GetNrOfAvailableCrew(){
+        return GetNrOfAvailableBagageHandlers()+GetNrOfAvailableFuelHandlers()+GetNrOfAvailablePilots()+GetNrOfAvailableFlightAtendents();
+    }
+    public int GetNrOfUnavailableCrew(){
+        return crewList.size()-GetNrOfAvailableCrew();
+    }
+
+    public List<Crew> GetAvailableCrewList(){
+        List<Crew> AvailableCrewList = new ArrayList<>();
+        for(Crew crew:crewList)
+            if(crew.IsAvailable())
+                AvailableCrewList.add(crew);
+        return AvailableCrewList;
+    }
+    public List<Crew> GetUnAvailableCrewList(){
+        List<Crew> UnAvailableCrewList = new ArrayList<>();
+        for(Crew crew:crewList)
+            if(!crew.IsAvailable())
+                UnAvailableCrewList.add(crew);
+        return UnAvailableCrewList;
+    }
     public int GetNrOfAvailablePilots(){
         int result = 0;
         for(Pilot pilot:PilotList)

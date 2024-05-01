@@ -1,5 +1,6 @@
 package org.example;
 
+import java.text.MessageFormat;
 import java.util.logging.Level;
 
 public class Pilot extends Crew{
@@ -11,13 +12,12 @@ public class Pilot extends Crew{
         Type ="Pilot";
     }
 
-    private String Type ;
     public String GetType (){
         return Type;
     }
 
     @Override
     public String toString() {
-        return Name + " (Pilot)";
+        return MessageFormat.format("{0} ({1})",Type,Name);
     }
 }

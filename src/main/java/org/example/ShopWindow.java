@@ -332,8 +332,9 @@ public class ShopWindow extends JFrame {
         top.add(Label_Planes);
         top.add(Label_Pilots);
         top.add(Label_FlightAtendents);
-        top.add(Label_FuelHandlers);
         top.add(Label_BagageHandlers);
+        top.add(Label_FuelHandlers);
+
 
         bottom.add(Label_Error);
         topUI.add(top);

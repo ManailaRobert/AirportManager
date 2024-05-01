@@ -1,12 +1,13 @@
 package org.example;
 
+import java.text.MessageFormat;
+
 public class BagageHandler extends Crew{
 
-    private String Type ;
     public  BagageHandler(){
         super();
-        super.Price = 100;
-        Type = "BagageHandler";
+        Price = 100;
+        Type = "Bagage Handler";
     }
 
 
@@ -15,6 +16,6 @@ public class BagageHandler extends Crew{
     }
     @Override
     public String toString() {
-        return Name + " (Bagage Handler)";
+        return MessageFormat.format("{0} ({1})",Type,Name);
     }
 }
