@@ -7,7 +7,7 @@ public class AvailableCrewTableModel extends AbstractTableModel {
 
     private  CrewList CrewList;
     private List<Crew> AllCrew;
-    private String[] columns ={"Nr","Type","Name"};
+    private String[] columns ={"Nr","Job","Name"};
 
     public AvailableCrewTableModel(CrewList crewList ){
         CrewList = crewList;

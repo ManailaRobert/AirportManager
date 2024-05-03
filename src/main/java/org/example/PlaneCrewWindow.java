@@ -2,6 +2,8 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.text.MessageFormat;
 
 public class PlaneCrewWindow extends JFrame{
 
@@ -18,6 +20,7 @@ public class PlaneCrewWindow extends JFrame{
     JList LB_Crew = new JList<>(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
 
 
+
     //right
     JPanel Right = new JPanel();
 
@@ -25,7 +28,7 @@ public class PlaneCrewWindow extends JFrame{
     JPanel PilotPanel = new JPanel();
     JButton BTN_RemovePilot = new JButton("-");
     JLabel PilotText = new JLabel("Pilot: ");
-    JLabel Label_Pilot = new JLabel("Pilot 1");
+    JLabel Label_Pilot = new JLabel("----");
 
     //Flight Atendents
     JPanel  FlightAtendentsArea = new JPanel();
@@ -40,12 +43,15 @@ public class PlaneCrewWindow extends JFrame{
     //Buttons
     JPanel ButtonsPanel = new JPanel();
     JButton BTN_Assign = new JButton("Assign");
-    JButton BTN_Save = new JButton("Save");
+
 
     Plane CurentPlane;
+
     Game Game;
     AirportManagerGame MainWindow;
-    public  PlaneCrewWindow(Plane plane,Game game,AirportManagerGame mainWindow){
+    DefaultListModel<Crew> AvailableCrewModel = new DefaultListModel<>();
+    DefaultListModel<Crew> FlightAtendentsModel = new DefaultListModel<>();
+    public  PlaneCrewWindow(Plane plane,Game game,AirportManagerGame mainWindow,int lane){
         super("CrewWindow");
         CurentPlane = plane;
         Game= game;
@@ -60,10 +66,114 @@ public class PlaneCrewWindow extends JFrame{
 
         decorateUI();
         addUI();
-
+        addEvents();
+        loadUI();
+        LB_Crew.setModel(AvailableCrewModel);
+        LB_FlightAtendents.setModel(FlightAtendentsModel);
         setVisible(true);
-    }
 
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mainWindow.verifyDepart(lane,CurentPlane);
+            }
+        });
+    }
+    private void loadUI(){
+        loadCrewList();
+        loadPlaneData();
+        MainWindow.UpdateTopUI();
+    }
+    private void  loadPlaneData(){
+        Label_Plane.setText(CurentPlane.toString());
+        if(CurentPlane.GetPilot() != null){
+            Label_Pilot.setText(CurentPlane.GetPilot().getName());
+        }else Label_Pilot.setText("----");
+
+        FlightAtendentsModel.clear();
+        if(CurentPlane.GetFlightAtendentList().size()!=0)
+        {
+            for(FlightAtendent flightAtendent:CurentPlane.GetFlightAtendentList())
+                FlightAtendentsModel.addElement(flightAtendent);
+        }
+        FlightAtendentsText.setText(MessageFormat.format("Flight Atendents: {0}/{1}",CurentPlane.GetFlightAtendentList().size(),CurentPlane.GetMaxFlightAtendents()));
+    }
+    private void loadCrewList(){
+        AvailableCrewModel.clear();
+        for(Crew crew:Game.CrewList.GetAvailableFlightCrew())
+            AvailableCrewModel.addElement(crew);
+    }
+    private void assignCrew(){
+        if(LB_Crew.getSelectedValue()!=null){
+            Crew crew = (Crew) LB_Crew.getSelectedValue();
+            if(crew instanceof Pilot)
+            {
+                if(CurentPlane.GetPilot() != null)
+                    CurentPlane.GetPilot().setAssignedPlane(null);
+                CurentPlane.SetPilot((Pilot) crew);
+                crew.setAssignedPlane(CurentPlane);
+                loadUI();
+            }else if(CurentPlane.GetFlightAtendentList().size()<CurentPlane.GetMaxFlightAtendents())
+            {
+                CurentPlane.GetFlightAtendentList().add((FlightAtendent) crew);
+                crew.setAssignedPlane(CurentPlane);
+                loadUI();
+            }
+
+        }
+    }
+    private void addEvents(){
+        LB_Crew.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount()== 2)
+                    assignCrew();
+            }
+        });
+
+        LB_FlightAtendents.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount()== 2)
+                {
+                    if(LB_FlightAtendents.getSelectedValue()!=null){
+                        FlightAtendent flightAtendent = (FlightAtendent) LB_FlightAtendents.getSelectedValue();
+                        flightAtendent.setAssignedPlane(null);
+                        CurentPlane.GetFlightAtendentList().remove(flightAtendent);
+                        loadUI();
+                    }
+                }
+            }
+        });
+        BTN_Assign.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                assignCrew();
+            }
+        });
+        BTN_RemovePilot.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(CurentPlane.GetPilot()!=null){
+                    CurentPlane.RemovePilot();
+                    loadUI();
+                }
+            }
+        });
+
+        BTN_RemoveFlightAtendent.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(LB_FlightAtendents.getSelectedValue()!=null){
+                    FlightAtendent flightAtendent = (FlightAtendent) LB_FlightAtendents.getSelectedValue();
+                    flightAtendent.setAssignedPlane(null);
+                    CurentPlane.GetFlightAtendentList().remove(flightAtendent);
+                    loadUI();
+                }
+            }
+        });
+
+    }
     private void decorateUI() {
         Font f = new Font("Times New Roman",Font.BOLD,14);
 
@@ -93,11 +203,6 @@ public class PlaneCrewWindow extends JFrame{
         BTN_Assign.setFocusPainted(false);
         BTN_Assign.setBackground(Color.LIGHT_GRAY);
         BTN_Assign.setForeground(Color.black);
-
-        BTN_Save.setFont(f);
-        BTN_Save.setFocusPainted(false);
-        BTN_Save.setBackground(Color.LIGHT_GRAY);
-        BTN_Save.setForeground(Color.black);
 
         FlightAtendentsPanel.setPreferredSize(new Dimension(200,200));
 
@@ -132,7 +237,6 @@ public class PlaneCrewWindow extends JFrame{
         //buttons panel
 
         ButtonsPanel.add(BTN_Assign);
-        ButtonsPanel.add(BTN_Save);
 
         //right
         Right.setLayout(new BoxLayout(Right,BoxLayout.Y_AXIS));

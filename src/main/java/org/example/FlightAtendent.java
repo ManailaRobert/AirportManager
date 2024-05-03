@@ -17,6 +17,6 @@ public class FlightAtendent extends Crew{
 
     @Override
     public String toString() {
-        return MessageFormat.format("{0} ({1})",Type,Name);
+        return MessageFormat.format("{0} (Flight Atendent)",Name);
     }
 }

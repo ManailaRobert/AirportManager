@@ -102,7 +102,7 @@ public class ShopWindow extends JFrame {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 int level = LB_Planes.getSelectedIndex()+1;
-                Plane plane = new Plane(level);
+                Plane plane = new Plane(level,"");
                 String planeDetails = "Plane LVL " +level+
                         "\nMax Passagers: " +plane.GetMaxPassagers()+
                         "\nMax Flight Atendents: " + plane.GetMaxFlightAtendents()+
@@ -120,7 +120,7 @@ public class ShopWindow extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 int QTY = CB_PlaneQTY.getSelectedIndex()+1;
                 int level = LB_Planes.getSelectedIndex()+1;
-                Plane plane = new Plane(level);
+                Plane plane = new Plane(level,"");
                 Label_TotalPricePlanes.setText(MessageFormat.format("Total price: {0}$",QTY*plane.getPrice()));
             }
         });
@@ -129,12 +129,12 @@ public class ShopWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int QTY = CB_PlaneQTY.getSelectedIndex()+1;
                 int level = LB_Planes.getSelectedIndex()+1;
-                Plane plane = new Plane(level);
+                Plane plane = new Plane(level,"");
                 int price = QTY*plane.getPrice();
                 if(Game.Money >= price){
                     for(int i = 1;i<=QTY;i++)
                     {
-                        Plane newPlane = new Plane(level);
+                        Plane newPlane = new Plane(level,"");
                         Game.PlaneList.add(newPlane);
                     }
                     Game.Money -=price;

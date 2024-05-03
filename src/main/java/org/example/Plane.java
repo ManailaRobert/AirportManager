@@ -8,17 +8,21 @@ public class Plane {
     private int Price;
    private Pilot pilot;
    private List<FlightAtendent> FlightAtendents;
+   private List<BagageHandler> BagageHandlers;
+   private List<FuelHandler> FuelHandlers;
    private int MaxPassagers;
    private int CurentPassagers;
    private int CurentFuel;
    public int MaxFlightAtendents;
    private boolean BagagesLoaded;
 
+   private int distance;
    private int NeededBagageHandlers;
     private int NeededFuelHandlers;
 
     private int RefuelPrice;
 
+    private String Status;
     private boolean Available;
     public boolean IsAvailable(){
         return Available;
@@ -26,7 +30,22 @@ public class Plane {
     public void SetAvailability(boolean availability){
         Available = availability;
     }
+    public String getStatus() {
+        return Status;
+    }
 
+    public String GetID(){
+        return "#" + id;
+    }
+    public void setStatus(String status) {
+        Status = status;
+    }
+public boolean IsUndockable()
+{
+    if(CurentPassagers > 0 || IsLoadedWithBagages() )
+        return true;
+    return false;
+}
    public boolean IsEligibleToFly(){
         if(pilot == null)
             return false;
@@ -55,6 +74,25 @@ public class Plane {
     public int GetNeededFuelhandlers(){
         return NeededFuelHandlers;
     }
+    public void clearFuelHandlers() {
+        for(FuelHandler fuelHandler:FuelHandlers)
+            fuelHandler.SetAvailability(true);
+        FuelHandlers.clear();
+    }
+    public void addFuelHandlers(CrewList crewList) {
+        int nr = 0;
+        for(FuelHandler fuelHandler:crewList.FuelHandlerList){
+            if(fuelHandler.IsAvailable()) {
+                fuelHandler.SetAvailability(false);
+                FuelHandlers.add(fuelHandler);
+                nr++;
+                if(nr == NeededFuelHandlers) break;
+            }
+        }
+    }
+    public  int GetRefuelPrice(){
+        return  RefuelPrice;
+    }
 
    //bagages
    public  boolean IsLoadedWithBagages(){
@@ -63,13 +101,30 @@ public class Plane {
    public  void LoadBagages(){
         BagagesLoaded = true;
     }
+    public  void UnLoadBagages(){
+        BagagesLoaded = false;
+    }
     public int GetNeededBagagehandlers(){
        return NeededBagageHandlers;
     }
-
-    public  int GetRefuelPrice(){
-       return  RefuelPrice;
+    public void clearBagageHandlers() {
+        for(BagageHandler bagageHandlers:BagageHandlers)
+            bagageHandlers.SetAvailability(true);
+        BagageHandlers.clear();
     }
+    public void addBagageHandlers(CrewList crewList) {
+        int nr = 0;
+        for(BagageHandler bagageHandler:crewList.BagageHandlerList){
+            if(bagageHandler.IsAvailable()) {
+                bagageHandler.SetAvailability(false);
+                BagageHandlers.add(bagageHandler);
+                nr++;
+                if(nr == NeededBagageHandlers) break;
+            }
+        }
+    }
+
+
    //pilot
     public Pilot GetPilot(){
        return pilot;
@@ -78,7 +133,8 @@ public class Plane {
        pilot=Pilot;
     }
     public  void RemovePilot(){
-       pilot = null;
+        pilot.setAssignedPlane(null);
+        pilot = null;
     }
    //flight atendents
     public List<FlightAtendent> GetFlightAtendentList(){
@@ -104,41 +160,49 @@ public class Plane {
        if(CurentPassagers+NrPassagers <= MaxPassagers)
            CurentPassagers+=NrPassagers;
     }
+    public void UnBoardPassagers (){
+            CurentPassagers=0;
+    }
     public int GetMaxPassagers(){
        return MaxPassagers;
     }
 
-   public  Plane(int level){
+   public  Plane(int level,String status){
        Random random = new Random();
        String[] prefix = {"FX","RX","ZX","NX","KX","LX","PX","OX","BX","GX","TX","EX","IX","SX","WX","CX","JX","HX"};
+       Available = true;
+       pilot = null;
+       FlightAtendents = new ArrayList<>();
+       BagageHandlers = new ArrayList<>();
+       FuelHandlers = new ArrayList<>();
+       Status = status;
+       BagagesLoaded =false;
+       distance = 1;
        switch (level){
            case 1:
                Level = level;
-               Available = true;
-               pilot = null;
-               FlightAtendents = new ArrayList<FlightAtendent>();
                MaxPassagers = 50;
                CurentPassagers = 0;
                CurentFuel = 0;
                MaxFlightAtendents = 2;
-               BagagesLoaded =false;
                NeededBagageHandlers = 4;
                NeededFuelHandlers = 3;
                RefuelPrice = 250;
                Price = 5000;
 
+               CurentPassagers = 10;
+               BagagesLoaded =true;
+
+
                id = prefix[random.nextInt(prefix.length)]+"1"+random.nextInt(99) ;
                break;
            case 2:
                Level = level;
-               Available = true;
-               pilot = null;
-               FlightAtendents = new ArrayList<FlightAtendent>();
+
                MaxPassagers = 100;
                CurentPassagers = 0;
                CurentFuel = 0;
                MaxFlightAtendents = 3;
-               BagagesLoaded =false;
                NeededBagageHandlers = 6;
                NeededFuelHandlers = 4;
                RefuelPrice = 500;
@@ -148,14 +212,10 @@ public class Plane {
                break;
            case 3:
                Level = level;
-               Available = true;
-               pilot = null;
-               FlightAtendents = new ArrayList<FlightAtendent>();
                MaxPassagers = 150;
                CurentPassagers = 0;
                CurentFuel = 0;
                MaxFlightAtendents = 4;
-               BagagesLoaded =false;
                NeededBagageHandlers = 8;
                NeededFuelHandlers = 5;
                RefuelPrice = 750;
@@ -165,14 +225,10 @@ public class Plane {
                break;
            case 4:
                Level = level;
-               Available = true;
-               pilot = null;
-               FlightAtendents = new ArrayList<FlightAtendent>();
                MaxPassagers = 200;
                CurentPassagers = 0;
                CurentFuel = 0;
                MaxFlightAtendents = 5;
-               BagagesLoaded =false;
                NeededBagageHandlers = 10;
                NeededFuelHandlers = 6;
                RefuelPrice = 1000;
@@ -182,14 +238,10 @@ public class Plane {
                break;
            case 5:
                Level = level;
-               Available = true;
-               pilot = null;
-               FlightAtendents = new ArrayList<FlightAtendent>();
                MaxPassagers = 250;
                CurentPassagers = 0;
                CurentFuel = 0;
                MaxFlightAtendents = 6;
-               BagagesLoaded =false;
                NeededBagageHandlers = 12;
                NeededFuelHandlers = 7;
                RefuelPrice = 1250;
@@ -199,13 +251,9 @@ public class Plane {
                break;
            default:
                Level = level;
-               Available = true;
-               pilot = null;
-               FlightAtendents = new ArrayList<FlightAtendent>();
                MaxPassagers = 350;
                CurentPassagers = 0;
                CurentFuel = 0;
-               BagagesLoaded =false;
                NeededBagageHandlers = 15;
                NeededFuelHandlers = 10;
                RefuelPrice = 1850;
@@ -222,4 +270,11 @@ public class Plane {
     }
 
 
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
 }

@@ -50,6 +50,9 @@ public class Crew {
     }
 
     public void setAssignedPlane(Plane assignedPlane) {
+        if(assignedPlane == null) Available = true;
+        else Available = false;
+
         AssignedPlane = assignedPlane;
     }
     public String getName(){

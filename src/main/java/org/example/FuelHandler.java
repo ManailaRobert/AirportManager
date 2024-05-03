@@ -16,6 +16,6 @@ public class FuelHandler extends Crew{
     }
     @Override
     public String toString() {
-        return MessageFormat.format("{0} ({1})",Type,Name);
+        return MessageFormat.format("{0} ({1})",Name,Type);
     }
 }
