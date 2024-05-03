@@ -5,9 +5,14 @@ import java.awt.*;
 
 public class PlaneCrewWindow extends JFrame{
 
+
+    JLabel Label_Plane =new JLabel("Plane name");
+    JPanel Top = new JPanel();
+    JPanel Center = new JPanel();
     //left
     JPanel Left = new JPanel();
     // Available Crew
+
     JLabel CrewText =new JLabel("Available Crew");
     JPanel ListCrewPanel = new JPanel();
     JList LB_Crew = new JList<>(new String[]{" Item 1"," Item 2"," Item 3"," Item 4"});
@@ -50,7 +55,7 @@ public class PlaneCrewWindow extends JFrame{
 
         setSize(700,350);
         setResizable(false);
-        GridLayout layout = new GridLayout(1,2);
+        BorderLayout layout = new BorderLayout(5,2);
         setLayout(layout);
 
         decorateUI();
@@ -62,6 +67,8 @@ public class PlaneCrewWindow extends JFrame{
     private void decorateUI() {
         Font f = new Font("Times New Roman",Font.BOLD,14);
 
+        Label_Plane.setFont(f);
+        Label_Plane.setHorizontalAlignment(SwingConstants.CENTER);
         CrewText.setFont(f);
         LB_Crew.setFont(f);
 
@@ -134,8 +141,12 @@ public class PlaneCrewWindow extends JFrame{
         Right.add(ButtonsPanel);
 
 
-        add(Left);
-        add(Right);
+        Center.setLayout(new GridLayout(1,2));
+        Center.add(Left);
+        Center.add(Right);
+
+        add(Label_Plane,BorderLayout.NORTH);
+        add(Center,BorderLayout.CENTER);
     }
 
 
