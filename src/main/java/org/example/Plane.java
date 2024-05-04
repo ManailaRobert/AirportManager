@@ -16,6 +16,7 @@ public class Plane {
    public int MaxFlightAtendents;
    private boolean BagagesLoaded;
 
+   private boolean Returning;
    private int distance;
    private int NeededBagageHandlers;
     private int NeededFuelHandlers;
@@ -40,8 +41,7 @@ public class Plane {
     public void setStatus(String status) {
         Status = status;
     }
-public boolean IsUndockable()
-{
+public boolean IsUndockable() {
     if(CurentPassagers > 0 || IsLoadedWithBagages() )
         return true;
     return false;
@@ -53,7 +53,7 @@ public boolean IsUndockable()
             return false;
         if(!IsFueled())
             return false;
-        if(!IsLoadedWithBagages())
+        if(!IsLoadedWithBagages() || isReturning())
             return false;
         if(CurentPassagers == 0)
             return false;
@@ -71,12 +71,15 @@ public boolean IsUndockable()
    public void FuelUp(){
         CurentFuel = 100;
     }
+    public void UseFuel(){CurentFuel =0;}
     public int GetNeededFuelhandlers(){
         return NeededFuelHandlers;
     }
     public void clearFuelHandlers() {
-        for(FuelHandler fuelHandler:FuelHandlers)
+        for(FuelHandler fuelHandler:FuelHandlers) {
             fuelHandler.SetAvailability(true);
+            fuelHandler.setAssignedPlane(null);
+        }
         FuelHandlers.clear();
     }
     public void addFuelHandlers(CrewList crewList) {
@@ -85,6 +88,7 @@ public boolean IsUndockable()
             if(fuelHandler.IsAvailable()) {
                 fuelHandler.SetAvailability(false);
                 FuelHandlers.add(fuelHandler);
+                fuelHandler.setAssignedPlane(this);
                 nr++;
                 if(nr == NeededFuelHandlers) break;
             }
@@ -108,8 +112,10 @@ public boolean IsUndockable()
        return NeededBagageHandlers;
     }
     public void clearBagageHandlers() {
-        for(BagageHandler bagageHandlers:BagageHandlers)
-            bagageHandlers.SetAvailability(true);
+        for(BagageHandler bagageHandler:BagageHandlers) {
+            bagageHandler.SetAvailability(true);
+            bagageHandler.setAssignedPlane(null);
+        }
         BagageHandlers.clear();
     }
     public void addBagageHandlers(CrewList crewList) {
@@ -118,6 +124,7 @@ public boolean IsUndockable()
             if(bagageHandler.IsAvailable()) {
                 bagageHandler.SetAvailability(false);
                 BagageHandlers.add(bagageHandler);
+                bagageHandler.setAssignedPlane(this);
                 nr++;
                 if(nr == NeededBagageHandlers) break;
             }
@@ -139,10 +146,6 @@ public boolean IsUndockable()
    //flight atendents
     public List<FlightAtendent> GetFlightAtendentList(){
        return FlightAtendents;
-    }
-    public void AddFlightAtendents(FlightAtendent FlightAtendent){
-       if(FlightAtendents.size() < MaxFlightAtendents)
-        FlightAtendents.add(FlightAtendent);
     }
     public  int GetMaxFlightAtendents(){
        return MaxFlightAtendents;
@@ -178,6 +181,7 @@ public boolean IsUndockable()
        Status = status;
        BagagesLoaded =false;
        distance = 1;
+       Returning = false;
        switch (level){
            case 1:
                Level = level;
@@ -189,9 +193,6 @@ public boolean IsUndockable()
                NeededFuelHandlers = 3;
                RefuelPrice = 250;
                Price = 5000;
-
-               CurentPassagers = 10;
-               BagagesLoaded =true;
 
 
                id = prefix[random.nextInt(prefix.length)]+"1"+random.nextInt(99) ;
@@ -276,5 +277,13 @@ public boolean IsUndockable()
 
     public void setDistance(int distance) {
         this.distance = distance;
+    }
+
+    public boolean isReturning() {
+        return Returning;
+    }
+
+    public void setReturning(boolean returning) {
+        Returning = returning;
     }
 }

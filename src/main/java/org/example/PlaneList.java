@@ -7,7 +7,8 @@ import java.util.List;
 public class PlaneList {
     public DefaultListModel<Plane> AwaitingPlanesListModel;
     public DefaultListModel<Plane> IdlePlanesListModel;
-    public DefaultListModel<Plane> SentPlanesListModel;
+    public DefaultListModel<TimedItem> SentPlanesListModel;
+
     public List<Plane> AllPlanes;
 
 

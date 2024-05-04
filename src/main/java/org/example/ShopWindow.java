@@ -83,12 +83,20 @@ public class ShopWindow extends JFrame {
         addUI();
         addEvents();
 
+        Timer timer2  = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UpdateTopUI();
+            }
+        });
+        timer2.start();
+
         UpdateTopUI();
         setVisible(true);
     }
 
     public void UpdateTopUI(){
-        Label_Money.setText(MessageFormat.format("Money: {0}$",Game.Money));
+        Label_Money.setText(MessageFormat.format("Money: {0}$",Game.getMoney()));
         Label_Pilots.setText(MessageFormat.format("Pilots: {0}/{1}",Game.CrewList.GetNrOfAvailablePilots(),Game.CrewList.PilotList.size()));
         Label_Planes.setText(MessageFormat.format("Planes: {0}/{1}",Game.PlaneList.GetNrOfAvailablePlanes(),Game.PlaneList.GetSize()));
         Label_FlightAtendents.setText(MessageFormat.format("Flight Atendents: {0}/{1}",Game.CrewList.GetNrOfAvailableFlightAtendents(),Game.CrewList.FlightAtendentList.size()));
@@ -131,13 +139,13 @@ public class ShopWindow extends JFrame {
                 int level = LB_Planes.getSelectedIndex()+1;
                 Plane plane = new Plane(level,"");
                 int price = QTY*plane.getPrice();
-                if(Game.Money >= price){
+                if(Game.getMoney() >= price){
                     for(int i = 1;i<=QTY;i++)
                     {
                         Plane newPlane = new Plane(level,"");
                         Game.PlaneList.add(newPlane);
                     }
-                    Game.Money -=price;
+                    Game.removeMoney(price);
                     UpdateTopUI();
                     Label_Error.setForeground(Color.GREEN);
                     Label_Error.setText("Purchase successfull");
@@ -211,9 +219,9 @@ public class ShopWindow extends JFrame {
                     case 1:
                         Pilot pilot = new Pilot();
                         price = QTY * pilot.getPrice();
-                        if(Game.Money >= price)
+                        if(Game.getMoney() >= price)
                         {
-                            Game.Money-=price;
+                            Game.removeMoney(price);
                             for(int i = 1;i<=QTY;i++)
                                 Game.CrewList.add(new Pilot());
                             Label_Error.setForeground(Color.GREEN);
@@ -227,9 +235,9 @@ public class ShopWindow extends JFrame {
                     case 2:
                         FlightAtendent flightAtendent =new FlightAtendent();
                         price = QTY * flightAtendent.getPrice();
-                        if(Game.Money >= price)
+                        if(Game.getMoney() >= price)
                         {
-                            Game.Money-=price;
+                            Game.removeMoney(price);
                             for(int i = 1;i<=QTY;i++)
                                 Game.CrewList.add(new FlightAtendent());
                             Label_Error.setForeground(Color.GREEN);
@@ -243,9 +251,9 @@ public class ShopWindow extends JFrame {
                     case 3:
                         BagageHandler bagageHandler = new BagageHandler();
                         price = QTY * bagageHandler.getPrice();
-                        if(Game.Money >= price)
+                        if(Game.getMoney() >= price)
                         {
-                            Game.Money-=price;
+                            Game.removeMoney(price);
                             for(int i = 1;i<=QTY;i++)
                                 Game.CrewList.add(new BagageHandler());
                             Label_Error.setForeground(Color.GREEN);
@@ -259,9 +267,9 @@ public class ShopWindow extends JFrame {
                     case 4:
                         FuelHandler fuelHandler = new FuelHandler();
                         price = QTY * fuelHandler.getPrice();
-                        if(Game.Money >= price)
+                        if(Game.getMoney() >= price)
                         {
-                            Game.Money-=price;
+                            Game.removeMoney(price);
                             for(int i = 1;i<=QTY;i++)
                                 Game.CrewList.add(new FuelHandler());
                             Label_Error.setForeground(Color.GREEN);

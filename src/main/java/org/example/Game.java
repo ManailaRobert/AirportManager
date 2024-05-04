@@ -2,7 +2,7 @@ package org.example;
 
 public class Game {
 
-    public int Money;
+    private int Money;
     public CrewList CrewList;
     public PlaneList PlaneList;
     public int AwaitingPassagers;
@@ -11,8 +11,10 @@ public class Game {
 
     private int DistanceValue;
 
+    public  int Trips;
     public  Game(){
-        Money = 99999;
+        Trips = 0;
+        Money = 5000;
         AwaitingPassagers = 400;
         CrewList = new CrewList();
         PlaneList = new PlaneList();
@@ -26,5 +28,17 @@ public class Game {
 
     public int getDistanceValue() {
         return DistanceValue;
+    }
+
+    public int getMoney() {
+        return Money;
+    }
+
+    public void addMoney(int money) {
+        Money  +=money;
+    }
+
+    public void removeMoney(int money) {
+        Money -=money;
     }
 }

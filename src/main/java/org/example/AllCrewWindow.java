@@ -2,6 +2,8 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 
 public class AllCrewWindow extends JFrame {
@@ -26,6 +28,7 @@ public class AllCrewWindow extends JFrame {
     JTable DispatchedCrewTable = new JTable();
     JScrollPane DispatchedCrewScroll = new JScrollPane();
 
+    JButton BTN_Refresh = new JButton("Refresh");
     Game Game;
     AirportManagerGame MainWindow;
     public  AllCrewWindow(Game game,AirportManagerGame mainWindow){
@@ -45,6 +48,21 @@ public class AllCrewWindow extends JFrame {
         addConstraints();
 
         UpdateTopUI();
+
+
+        BTN_Refresh.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Component[] components = getContentPane().getComponents();
+                for (Component component : components) {
+                    remove(component);
+                }
+                revalidate();
+                addUI();
+                UpdateTopUI();
+                repaint();
+            }
+        });
 
         setVisible(true);
     }
@@ -91,6 +109,11 @@ public class AllCrewWindow extends JFrame {
         DispatchedCrewTable.setFont(f);
         DispatchedCrewTable.setBackground(Color.LIGHT_GRAY);
 
+        BTN_Refresh.setFont(f);
+        BTN_Refresh.setFocusPainted(false);
+        BTN_Refresh.setBackground(Color.BLUE);
+        BTN_Refresh.setForeground(Color.WHITE);
+
     }
     private void addUI() {
 
@@ -99,6 +122,8 @@ public class AllCrewWindow extends JFrame {
         TopUI.add(Label_FlightAtendents);
         TopUI.add(Label_BagageHandlers);
         TopUI.add(Label_FuelHandlers);
+        TopUI.add(BTN_Refresh);
+
 
 
         Top.setLayout(new BoxLayout(Top,BoxLayout.Y_AXIS));

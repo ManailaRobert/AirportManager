@@ -70,7 +70,7 @@ public class AirportManagerGame extends JFrame {
     JPanel Lane1Bottom = new JPanel(new GridLayout(1,3));
     JLabel Label_Lane1Fuel = new JLabel("Fuel: 0%");
     JLabel Label_Lane1Passagers = new JLabel("Passagers: 0/0");
-    JLabel Label_Lane1Status = new JLabel("  Status: Not Ready");
+    JLabel Label_Lane1Status = new JLabel("  Status: ---");
 
     //lane 2
     JPanel Lane2Space = new JPanel(new GridLayout(3,1));
@@ -86,7 +86,7 @@ public class AirportManagerGame extends JFrame {
     JPanel Lane2Bottom = new JPanel(new GridLayout(1,3));
     JLabel Label_Lane2Fuel = new JLabel("Fuel: 0%");
     JLabel Label_Lane2Passagers = new JLabel("Passagers: 0/0");
-    JLabel Label_Lane2Status = new JLabel("  Status: Not Ready");
+    JLabel Label_Lane2Status = new JLabel("  Status: ---");
 
     //lane 3
     JPanel Lane3Space = new JPanel(new GridLayout(3,1));
@@ -102,7 +102,7 @@ public class AirportManagerGame extends JFrame {
     JPanel Lane3Bottom = new JPanel(new GridLayout(1,3));
     JLabel Label_Lane3Fuel = new JLabel("Fuel: 0%");
     JLabel Label_Lane3Passagers = new JLabel("Passagers: 0/0");
-    JLabel Label_Lane3Status = new JLabel("  Status: Not Ready");
+    JLabel Label_Lane3Status = new JLabel("  Status: ---");
 
     //lane 1 buttons
     JPanel Lane1Buttons = new JPanel(new GridLayout(5,1));
@@ -172,8 +172,9 @@ public class AirportManagerGame extends JFrame {
         decorateUI();
         addUI();
         addEvents();
-        setVisible(true);
         InitializeGame();
+        setVisible(true);
+
     }
     Game Game;
     private PlaneList PlaneList;
@@ -201,6 +202,34 @@ public class AirportManagerGame extends JFrame {
         LB_SentPlanes.setModel(PlaneList.SentPlanesListModel);
         LB_AwaitingPlanes.setModel(PlaneList.AwaitingPlanesListModel);
 
+
+        Timer timer1  = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            for(int i = 0 ; i< PlaneList.SentPlanesListModel.size();i++){
+                TimedItem item = PlaneList.SentPlanesListModel.getElementAt(i);
+                item.decreaseTimer();
+                if(item.getTime()<=0){
+                    Plane plane = item.getPlane();
+                    PlaneList.SentPlanesListModel.removeElement(item);
+                    PlaneList.AwaitingPlanesListModel.addElement(plane);
+                    plane.setStatus("Awaiting to dock");
+                    plane.UseFuel();
+                }
+                LB_SentPlanes.repaint();
+            }
+            }
+        });
+        timer1.start();
+
+        Timer timer2  = new Timer(60000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Game.AwaitingPassagers+=1000;
+                UpdateTopUI();
+            }
+        });
+        timer2.start();
         //dummy data
         for(int i = 1; i <=10;i++){
             Random random =new Random();
@@ -209,12 +238,6 @@ public class AirportManagerGame extends JFrame {
             PlaneList.AllPlanes.add(plane);
         }
 
-        for(int i = 1; i <=5;i++){
-            Random random =new Random();
-            Plane plane = new Plane(random.nextInt(1,6),"Awaiting to dock");
-            PlaneList.AwaitingPlanesListModel.addElement(plane);
-            PlaneList.AllPlanes.add(plane);
-        }
         for(int i = 1; i <=10;i++){
             Pilot pilot = new Pilot();
             CrewList.add(pilot);
@@ -245,7 +268,7 @@ public class AirportManagerGame extends JFrame {
     }
 
     public void UpdateTopUI(){
-        Label_Money.setText(MessageFormat.format("Money: {0}$",Game.Money));
+        Label_Money.setText(MessageFormat.format("Money: {0}$",Game.getMoney()));
         Label_AwaitingPasagers.setText(MessageFormat.format("Awaiting passagers: {0}",Game.AwaitingPassagers));
         Label_Pilots.setText(MessageFormat.format("Pilots: {0}/{1}",Game.CrewList.GetNrOfAvailablePilots(),Game.CrewList.PilotList.size()));
         Label_Planes.setText(MessageFormat.format("Planes: {0}/{1}",Game.PlaneList.GetNrOfAvailablePlanes(),Game.PlaneList.GetSize()));
@@ -254,6 +277,7 @@ public class AirportManagerGame extends JFrame {
         Label_BagageHandlers.setText(MessageFormat.format("Bagage Handlers: {0}/{1}",Game.CrewList.GetNrOfAvailableBagageHandlers(),Game.CrewList.BagageHandlerList.size()));
         Label_AwaitingPlanes.setText("("+PlaneList.AwaitingPlanesListModel.getSize()+") Awaiting to dock planes:");
         Label_IdlePlanes.setText("("+PlaneList.IdlePlanesListModel.getSize()+") Idle planes: ");
+        Label_Trips.setText(MessageFormat.format("Trips: {0}",Game.Trips));
     }
     public void UpdateLaneUI(int lane){
         switch (lane){
@@ -261,16 +285,22 @@ public class AirportManagerGame extends JFrame {
                 Label_Lane1Passagers.setText(MessageFormat.format("Passagers: {0}/{1}",Lane1Plane.GetCurentPassagers(),Lane1Plane.GetMaxPassagers()));
                 if(Lane1Plane.IsFueled()) Label_Lane1Fuel.setText("Fuel: 100%");
                 else Label_Lane1Fuel.setText("Fuel: 0%");
+                if(Lane1Plane.GetCurentPassagers()==0)
+                    Label_Lane1Revenue.setText("Revenue: ---");
                 break;
             case 2:
                 Label_Lane2Passagers.setText(MessageFormat.format("Passagers: {0}/{1}",Lane2Plane.GetCurentPassagers(),Lane2Plane.GetMaxPassagers()));
                 if(Lane2Plane.IsFueled()) Label_Lane2Fuel.setText("Fuel: 100%");
                 else Label_Lane2Fuel.setText("Fuel: 0%");
+                if(Lane2Plane.GetCurentPassagers()==0)
+                    Label_Lane2Revenue.setText("Revenue: ---");
                 break;
             case 3:
                 Label_Lane3Passagers.setText(MessageFormat.format("Passagers: {0}/{1}",Lane3Plane.GetCurentPassagers(),Lane3Plane.GetMaxPassagers()));
                 if(Lane3Plane.IsFueled()) Label_Lane3Fuel.setText("Fuel: 100%");
                 else Label_Lane3Fuel.setText("Fuel: 0%");
+                if(Lane3Plane.GetCurentPassagers()==0)
+                    Label_Lane3Revenue.setText("Revenue: ---");
                 break;
         }
     }
@@ -281,6 +311,7 @@ public class AirportManagerGame extends JFrame {
                 BTN_Lane1Board.setEnabled(boolValue);
                 BTN_Lane1Load.setEnabled(boolValue);
                 BTN_Lane1Refuel.setEnabled(boolValue);
+
                 Lane1Distance.setEnabled(boolValue);
                 break;
             case 2:
@@ -304,17 +335,105 @@ public class AirportManagerGame extends JFrame {
             switch (lane){
                 case 1:
                     Label_Lane1Status.setText("Status: Ready to fly");
+                    plane.setStatus("Ready to fly");
                     BTN_Lane1Depart.setEnabled(true);
                     break;
                 case 2:
                     Label_Lane2Status.setText("Status: Ready to fly");
+                    plane.setStatus("Ready to fly");
                     BTN_Lane2Depart.setEnabled(true);
                     break;
                 case 3:
                     Label_Lane3Status.setText("Status: Ready to fly");
+                    plane.setStatus("Ready to fly");
                     BTN_Lane3Depart.setEnabled(true);
                     break;
             }
+    }
+    private void DisplayLane(Plane plane,int lane){
+        if(plane !=null){
+            switch (lane){
+                case 1:
+                    Label_Lane1PlaneName.setText(plane.toString());
+                    Label_Lane1Passagers.setText("Passagers: "+plane.GetCurentPassagers()+"/"+ plane.GetMaxPassagers());
+                    Label_Lane1Fuel.setText("Fuel: "+(plane.IsFueled()?"100%":"0%"));
+                    Lane1FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
+                    Lane1BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
+                    Lane1RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
+                    Label_Lane1Revenue.setText(MessageFormat.format("Revenue: {0}$",RevenueCalculator(Lane1Plane) ));
+                    Label_Lane1Status.setText("Status: Not Ready");
+
+                    Lane1Distance.setSelectedIndex(0);
+                    int departTime1 = (Lane1Distance.getSelectedIndex()+1)*5;
+                    Label_Lane1DepartTime.setText("Time: "+departTime1+" Hr (Sec)");
+
+                    break;
+                case 2:
+                    Label_Lane2PlaneName.setText(plane.toString());
+                    Label_Lane2Passagers.setText("Passagers: "+plane.GetCurentPassagers()+"/"+ plane.GetMaxPassagers());
+                    Label_Lane2Fuel.setText("Fuel: "+(plane.IsFueled()?"100%":"0%"));
+                    Lane2FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
+                    Lane2BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
+                    Lane2RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
+                    Label_Lane2Revenue.setText(MessageFormat.format("Revenue: {0}$",RevenueCalculator(Lane2Plane) ));
+                    Label_Lane2Status.setText("Status: Not Ready");
+
+                    Lane1Distance.setSelectedIndex(0);
+                    int departTime2 = (Lane2Distance.getSelectedIndex()+1)*5;
+                    Label_Lane2DepartTime.setText("Time: "+departTime2+" Hr (Sec)");
+                    break;
+                case 3:
+                    Label_Lane3PlaneName.setText(plane.toString());
+                    Label_Lane3Passagers.setText("Passagers: "+plane.GetCurentPassagers()+"/"+ plane.GetMaxPassagers());
+                    Label_Lane3Fuel.setText("Fuel: "+(plane.IsFueled()?"100%":"0%"));
+                    Lane3FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
+                    Lane3BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
+                    Lane3RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
+                    Label_Lane3Revenue.setText(MessageFormat.format("Revenue: {0}$",RevenueCalculator(Lane3Plane) ));
+                    Label_Lane3Status.setText("Status: Not Ready");
+
+                    Lane1Distance.setSelectedIndex(0);
+                    int departTime3 = (Lane2Distance.getSelectedIndex()+1)*5;
+                    Label_Lane3DepartTime.setText("Time: "+departTime3+" Hr (Sec)");
+                    break;
+            }
+        }else {
+            switch (lane){
+                case 1:
+                    Label_Lane1PlaneName.setText("------");
+                    Label_Lane1Passagers.setText("Passagers: 0/0");
+                    Label_Lane1Fuel.setText("Fuel: 0%");
+                    Lane1FuelH.setText("Fuel Handlers: ---");
+                    Lane1BagageH.setText("Bagage Handlers: ---");
+                    Lane1RefuelPrice.setText("Refuel price: ---");
+                    Label_Lane1Revenue.setText("Revenue: --- $");
+                    Label_Lane1DepartTime.setText("Time: ---");
+                    Label_Lane1Status.setText("Status: ---");
+                    break;
+                case 2:
+                    Label_Lane2PlaneName.setText("------");
+                    Label_Lane2Passagers.setText("Passagers: 0/0");
+                    Label_Lane2Fuel.setText("Fuel: 0%");
+                    Lane2FuelH.setText("Fuel Handlers: ---");
+                    Lane2BagageH.setText("Bagage Handlers: ---");
+                    Lane2RefuelPrice.setText("Refuel price: ---");
+                    Label_Lane2Revenue.setText("Revenue: --- $");
+                    Label_Lane2DepartTime.setText("Time: ---");
+                    Label_Lane2Status.setText("Status: ---");
+                    break;
+                case 3:
+                    Label_Lane3PlaneName.setText("------");
+                    Label_Lane3Passagers.setText("Passagers: 0/0");
+                    Label_Lane3Fuel.setText("Fuel: 0%");
+                    Lane3FuelH.setText("Fuel Handlers: ---");
+                    Lane3BagageH.setText("Bagage Handlers: ---");
+                    Lane3RefuelPrice.setText("Refuel price: ---");
+                    Label_Lane3Revenue.setText("Revenue: --- $");
+                    Label_Lane3DepartTime.setText("Time: ---");
+                    Label_Lane3Status.setText("Status: ---");
+                    break;
+            }
+        }
     }
     boolean updatingSelection = false;
 
@@ -357,6 +476,7 @@ public class AirportManagerGame extends JFrame {
         BTN_ToLane1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                TB_PlaneDetails.setText("");
                 if( Lane1Plane == null){
                     //docking
                     if(LB_AwaitingPlanes.getSelectedValue() != null)
@@ -390,9 +510,8 @@ public class AirportManagerGame extends JFrame {
                         }
                         else {
                             BTN_ToLane1.setEnabled(true);
-                            Lane1Distance.setEnabled(false);
+                            Lane1Distance.setEnabled(true);
                         }
-
                     }
                 }
                 else {
@@ -422,6 +541,7 @@ public class AirportManagerGame extends JFrame {
         BTN_ToLane2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                TB_PlaneDetails.setText("");
                 if( Lane2Plane == null){
                     //docking
                     if(LB_AwaitingPlanes.getSelectedValue() != null)
@@ -454,7 +574,7 @@ public class AirportManagerGame extends JFrame {
                         }
                         else {
                             BTN_ToLane2.setEnabled(true);
-                            Lane2Distance.setEnabled(false);
+                            Lane2Distance.setEnabled(true);
                         }
                     }
                 }
@@ -484,8 +604,10 @@ public class AirportManagerGame extends JFrame {
             }
         });
         BTN_ToLane3.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
+                TB_PlaneDetails.setText("");
                 if( Lane3Plane == null){
                     //docking
                     if(LB_AwaitingPlanes.getSelectedValue() != null)
@@ -518,7 +640,7 @@ public class AirportManagerGame extends JFrame {
                         }
                         else {
                             BTN_ToLane3.setEnabled(true);
-                            Lane3Distance.setEnabled(false);
+                            Lane3Distance.setEnabled(true);
                         }
                     }
                 }
@@ -582,72 +704,146 @@ public class AirportManagerGame extends JFrame {
         BTN_Lane1Load.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!Lane1Plane.IsLoadedWithBagages()){
+                if(!Lane1Plane.isReturning()){
                     //load
                     if(CrewList.GetNrOfAvailableBagageHandlers()>= Lane1Plane.GetNeededBagagehandlers()){
-                        Lane1Plane.LoadBagages();
+                        Lane1Plane.addBagageHandlers(CrewList);
+                        BTN_Lane1Load.setEnabled(false);
+                        UpdateTopUI();
+
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Loading: ",5);
+                        Lane1BagageH.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane1BagageH.setText(item.toString());
+                                if(item.getTime()<=0){
+                                    Lane1Plane.LoadBagages();
+                                    Lane1Plane.clearBagageHandlers();
+                                    UpdateTopUI();
+                                    verifyDepart(1,Lane1Plane);
+                                    Lane1BagageH.setText("Loaded");
+                                    BTN_ToLane1.setEnabled(false);
+
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
+                    }else Label_Lane1Error.setText("Not Enough Bagage Handlers");
+                }
+                else {
+                    //unload
+                    if(CrewList.GetNrOfAvailableBagageHandlers()>= Lane1Plane.GetNeededBagagehandlers()){
                         Lane1Plane.addBagageHandlers(CrewList);
                         UpdateTopUI();
                         BTN_Lane1Load.setEnabled(false);
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Unloading: ",5);
+                        Lane1BagageH.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane1BagageH.setText(item.toString());
+                                if(item.getTime()<=0){
+                                    Lane1Plane.UnLoadBagages();
+                                    Lane1Plane.clearBagageHandlers();
+                                    UpdateTopUI();
+                                    BTN_Lane1Load.setText("Load Bagages");
+                                    Lane1BagageH.setText(MessageFormat.format("Bagage Handlers: {0}",Lane1Plane.GetNeededBagagehandlers()));
+
+                                    if(Lane1Plane.GetCurentPassagers() == 0) {
+                                        Lane1Distance.setEnabled(true);
+                                        BTN_ToLane1.setEnabled(true);
+                                        Lane1Plane.setReturning(false);
+                                    }
+                                    BTN_Lane1Load.setEnabled(true);
+                                    verifyDepart(1,Lane1Plane);
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
                     }else Label_Lane1Error.setText("Not Enough Bagage Handlers");
-                    //timer
-                    verifyDepart(1,Lane1Plane);
-                }else {
-                    //unload
-                    if(CrewList.GetNrOfAvailableBagageHandlers()>= Lane1Plane.GetNeededBagagehandlers()){
-                        Lane1Plane.UnLoadBagages();
-                        Lane1Plane.addBagageHandlers(CrewList);
-                        UpdateTopUI();
-                        BTN_Lane1Load.setText("Load Bagages");
-                    }else Label_Lane1Error.setText("Not Enough Bagage Handlers");
-                    //timer
-                }
-                if(Lane1Plane.IsUndockable()) {
-                    BTN_ToLane1.setEnabled(false);
-                    Lane1Distance.setEnabled(false);
-                }
-                else {
-                    BTN_ToLane1.setEnabled(true);
-                    Lane1Distance.setEnabled(false);
                 }
             }
         });
         BTN_Lane1Board.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(Lane1Plane.GetCurentPassagers() == 0){
+                if(!Lane1Plane.isReturning()){
                     //board
                     if (Game.AwaitingPassagers > 0) {
-                        if (Game.AwaitingPassagers >= Lane1Plane.GetMaxPassagers()) {
-                            Lane1Plane.BoardPassagers(Lane1Plane.GetMaxPassagers());
-                            Game.AwaitingPassagers -= Lane1Plane.GetMaxPassagers();
-                            BTN_Lane1Board.setEnabled(false);
-                        } else {
-                            Lane1Plane.BoardPassagers(Game.AwaitingPassagers);
-                            Game.AwaitingPassagers = 0;
-                        }
-                        Label_Lane1Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane1Plane)));
-                        UpdateLaneUI(1);
-                        UpdateTopUI();
+                        BTN_Lane1Board.setEnabled(false);
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Boarding: ",5);
+                        Lane1FuelH.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane1FuelH.setText(item.toString());
+                                if(item.getTime()<=0){
+
+                                    if (Game.AwaitingPassagers >= Lane1Plane.GetMaxPassagers()) {
+                                        Lane1Plane.BoardPassagers(Lane1Plane.GetMaxPassagers());
+                                        Game.AwaitingPassagers -= Lane1Plane.GetMaxPassagers();
+                                        BTN_Lane1Board.setEnabled(false);
+                                    } else {
+                                        Lane1Plane.BoardPassagers(Game.AwaitingPassagers);
+                                        Game.AwaitingPassagers = 0;
+                                    }
+
+                                    Label_Lane1Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane1Plane)));
+                                    UpdateLaneUI(1);
+                                    UpdateTopUI();
+                                    BTN_ToLane1.setEnabled(false);
+                                    verifyDepart(1,Lane1Plane);
+                                    Lane1FuelH.setText(MessageFormat.format("Fuel Handlers: {0}",Lane1Plane.GetNeededFuelhandlers()));
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
                     } else Label_Lane1Error.setText("Not enough passagers");
-                    //timer
-                    verifyDepart(1, Lane1Plane);
                 }else{
                     //unboard
-                    Lane1Plane.UnBoardPassagers();
-                    Game.Money+= RevenueCalculator(Lane1Plane);
-                    BTN_Lane1Board.setText("Load Passagers");
-                    UpdateTopUI();
-                    UpdateLaneUI(1);
-                }
 
-                if(Lane1Plane.IsUndockable()) {
-                    BTN_ToLane1.setEnabled(false);
-                    Lane1Distance.setEnabled(false);
-                }
-                else {
-                    BTN_ToLane1.setEnabled(true);
-                    Lane1Distance.setEnabled(false);
+                    BTN_Lane1Board.setEnabled(false);
+                    final Timer []timer = new Timer[1];
+                    TimedItem item = new TimedItem("Unboarding: ",5);
+                    Lane1FuelH.setText(item.toString());
+                    timer[0]  = new Timer(1000, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            item.decreaseTimer();
+                            Lane1FuelH.setText(item.toString());
+                            if(item.getTime()<=0){
+                                Lane1FuelH.setText(MessageFormat.format("Fuel Handlers: {0}",Lane1Plane.GetNeededFuelhandlers()));
+                                Game.addMoney(RevenueCalculator(Lane1Plane));
+                                Lane1Plane.UnBoardPassagers();
+                                Label_Lane1Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane1Plane)));
+                                BTN_Lane1Board.setText("Load Passagers");
+                                Game.Trips+=1;
+
+                                UpdateTopUI();
+                                UpdateLaneUI(1);
+                                if(Lane1Plane.IsLoadedWithBagages() == false) {
+                                    Lane1Distance.setEnabled(true);
+                                    BTN_ToLane1.setEnabled(true);
+                                    Lane1Plane.setReturning(false);
+                                }
+                                BTN_Lane1Board.setEnabled(true);
+                                verifyDepart(1,Lane1Plane);
+                                timer[0].stop();
+                            }
+                        }
+                    });
+
+                    timer[0].start();
                 }
             }
         });
@@ -655,89 +851,200 @@ public class AirportManagerGame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(Game.CrewList.GetNrOfAvailableFuelHandlers() >=Lane1Plane.GetNeededFuelhandlers()){
-                    if(Game.Money >= Lane1Plane.GetRefuelPrice()){
-                        Lane1Plane.FuelUp();
-                        Game.Money -= Lane1Plane.GetRefuelPrice();
+                    if(Game.getMoney() >= Lane1Plane.GetRefuelPrice()){
+                        //timer start
+                        Game.removeMoney(Lane1Plane.GetRefuelPrice());
                         Lane1Plane.addFuelHandlers(CrewList);
                         UpdateTopUI();
-                        UpdateLaneUI(1);
                         BTN_Lane1Refuel.setEnabled(false);
+
+                        //timer
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Refueling: ",5);
+                        Lane1RefuelPrice.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane1RefuelPrice.setText(item.toString());
+                                if(item.getTime()<=0){
+
+                                    Lane1Plane.FuelUp();
+                                    Lane1Plane.clearFuelHandlers();
+                                    UpdateLaneUI(1);
+                                    UpdateTopUI();
+                                    verifyDepart(1,Lane1Plane);
+                                    Lane1RefuelPrice.setText("Fueled Up");
+
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
                     }else Label_Lane1Error.setText("Not enough money");
                 }else Label_Lane1Error.setText("Not enough fuel handlers");
-                //timer
-                verifyDepart(1,Lane1Plane);
+            }
+        });
+        BTN_Lane1Depart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Lane1Plane.setStatus("Travelling");
+                Lane1Plane.setDistance(Lane1Distance.getSelectedIndex()+1);
+                Lane1Plane.setReturning(true);
+                PlaneList.SentPlanesListModel.addElement(new TimedItem(Lane1Plane,Lane1Plane.getDistance()*5));
+                DisplayLane(null,1);
+                BTN_Lane1Depart.setEnabled(false);
+                initLaneButtons(1,false);
+                BTN_ToLane1.setEnabled(true);
+                BTN_ToLane1.setText("Dock to lane 1");
+                Lane1Plane = null;
             }
         });
 
         BTN_Lane2Load.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!Lane2Plane.IsLoadedWithBagages()){
+                if(!Lane2Plane.isReturning()){
                     //load
-                    if (CrewList.GetNrOfAvailableBagageHandlers() >= Lane2Plane.GetNeededBagagehandlers()) {
-                        Lane2Plane.LoadBagages();
+                    if(CrewList.GetNrOfAvailableBagageHandlers()>= Lane2Plane.GetNeededBagagehandlers()){
+                        Lane2Plane.addBagageHandlers(CrewList);
+                        BTN_Lane2Load.setEnabled(false);
+                        UpdateTopUI();
+
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Loading: ",5);
+                        Lane2BagageH.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane2BagageH.setText(item.toString());
+                                if(item.getTime()<=0){
+                                    Lane2Plane.LoadBagages();
+                                    Lane2Plane.clearBagageHandlers();
+                                    UpdateTopUI();
+                                    verifyDepart(2,Lane2Plane);
+                                    Lane2BagageH.setText("Loaded");
+                                    BTN_ToLane2.setEnabled(false);
+
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
+                    }else Label_Lane2Error.setText("Not Enough Bagage Handlers");
+                }
+                else {
+                    //unload
+                    if(CrewList.GetNrOfAvailableBagageHandlers()>= Lane2Plane.GetNeededBagagehandlers()){
                         Lane2Plane.addBagageHandlers(CrewList);
                         UpdateTopUI();
                         BTN_Lane2Load.setEnabled(false);
-                    } else Label_Lane2Error.setText("Not Enough Bagage Handlers");
-                    //timer
-                    verifyDepart(2, Lane2Plane);
-                }else {
-                    //unload
-                    if(CrewList.GetNrOfAvailableBagageHandlers()>= Lane2Plane.GetNeededBagagehandlers()){
-                        Lane2Plane.UnLoadBagages();
-                        Lane2Plane.addBagageHandlers(CrewList);
-                        UpdateTopUI();
-                        BTN_Lane2Load.setText("Load Bagages");
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Unloading: ",5);
+                        Lane2BagageH.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane2BagageH.setText(item.toString());
+                                if(item.getTime()<=0){
+                                    Lane2Plane.UnLoadBagages();
+                                    Lane2Plane.clearBagageHandlers();
+                                    UpdateTopUI();
+                                    BTN_Lane2Load.setText("Load Bagages");
+                                    Lane2BagageH.setText(MessageFormat.format("Bagage Handlers: {0}",Lane2Plane.GetNeededBagagehandlers()));
+
+                                    if(Lane2Plane.GetCurentPassagers() == 0) {
+                                        Lane2Distance.setEnabled(true);
+                                        BTN_ToLane2.setEnabled(true);
+                                        Lane2Plane.setReturning(false);
+                                    }
+                                    BTN_Lane2Load.setEnabled(true);
+                                    verifyDepart(2,Lane2Plane);
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
                     }else Label_Lane2Error.setText("Not Enough Bagage Handlers");
-                    //timer
-                }
-                if(Lane2Plane.IsUndockable()) {
-                    BTN_ToLane2.setEnabled(false);
-                    Lane2Distance.setEnabled(false);
-                }
-                else {
-                    BTN_ToLane2.setEnabled(true);
-                    Lane2Distance.setEnabled(false);
                 }
             }
         });
         BTN_Lane2Board.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(Lane2Plane.GetCurentPassagers() == 0){
+                if(!Lane2Plane.isReturning()){
                     //board
                     if (Game.AwaitingPassagers > 0) {
-                        if (Game.AwaitingPassagers >= Lane2Plane.GetMaxPassagers()) {
-                            Lane2Plane.BoardPassagers(Lane2Plane.GetMaxPassagers());
-                            Game.AwaitingPassagers -= Lane2Plane.GetMaxPassagers();
-                            BTN_Lane2Board.setEnabled(false);
-                        } else {
-                            Lane2Plane.BoardPassagers(Game.AwaitingPassagers);
-                            Game.AwaitingPassagers = 0;
-                        }
-                        Label_Lane2Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane2Plane)));
-                        UpdateLaneUI(2);
-                        UpdateTopUI();
+                        BTN_Lane2Board.setEnabled(false);
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Boarding: ",5);
+                        Lane2FuelH.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane2FuelH.setText(item.toString());
+                                if(item.getTime()<=0){
+
+                                    if (Game.AwaitingPassagers >= Lane2Plane.GetMaxPassagers()) {
+                                        Lane2Plane.BoardPassagers(Lane2Plane.GetMaxPassagers());
+                                        Game.AwaitingPassagers -= Lane2Plane.GetMaxPassagers();
+                                        BTN_Lane2Board.setEnabled(false);
+                                    } else {
+                                        Lane2Plane.BoardPassagers(Game.AwaitingPassagers);
+                                        Game.AwaitingPassagers = 0;
+                                    }
+
+                                    Label_Lane2Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane2Plane)));
+                                    UpdateLaneUI(2);
+                                    UpdateTopUI();
+                                    BTN_ToLane2.setEnabled(false);
+                                    verifyDepart(2,Lane2Plane);
+                                    Lane2FuelH.setText(MessageFormat.format("Fuel Handlers: {0}",Lane2Plane.GetNeededFuelhandlers()));
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
                     } else Label_Lane2Error.setText("Not enough passagers");
                     //timer
-                    verifyDepart(2, Lane2Plane);
                 }else{
                     //unboard
-                    Lane2Plane.UnBoardPassagers();
-                    Game.Money+= RevenueCalculator(Lane2Plane);
-                    BTN_Lane2Board.setText("Load Passagers");
-                    UpdateTopUI();
-                    UpdateLaneUI(2);
 
-                }
-                if(Lane2Plane.IsUndockable()) {
-                    BTN_ToLane2.setEnabled(false);
-                    Lane2Distance.setEnabled(false);
-                }
-                else {
-                    BTN_ToLane2.setEnabled(true);
-                    Lane2Distance.setEnabled(false);
+                    BTN_Lane2Board.setEnabled(false);
+                    final Timer []timer = new Timer[1];
+                    TimedItem item = new TimedItem("Unboarding: ",5);
+                    Lane2FuelH.setText(item.toString());
+                    timer[0]  = new Timer(1000, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            item.decreaseTimer();
+                            Lane2FuelH.setText(item.toString());
+                            if(item.getTime()<=0){
+                                Lane2FuelH.setText(MessageFormat.format("Fuel Handlers: {0}",Lane2Plane.GetNeededFuelhandlers()));
+                                Game.addMoney(RevenueCalculator(Lane2Plane));
+                                Lane2Plane.UnBoardPassagers();
+                                Label_Lane2Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane2Plane)));
+                                BTN_Lane2Board.setText("Load Passagers");
+                                Game.Trips+=1;
+
+                                UpdateTopUI();
+                                UpdateLaneUI(2);
+                                if(Lane2Plane.IsLoadedWithBagages() == false) {
+                                    Lane2Distance.setEnabled(true);
+                                    BTN_ToLane2.setEnabled(true);
+                                    Lane2Plane.setReturning(false);
+                                }
+                                BTN_Lane2Board.setEnabled(true);
+                                verifyDepart(2,Lane2Plane);
+                                timer[0].stop();
+                            }
+                        }
+                    });
+
+                    timer[0].start();
                 }
             }
         });
@@ -745,89 +1052,200 @@ public class AirportManagerGame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(Game.CrewList.GetNrOfAvailableFuelHandlers() >=Lane2Plane.GetNeededFuelhandlers()){
-                    if(Game.Money >= Lane2Plane.GetRefuelPrice()){
-                        Lane2Plane.FuelUp();
-                        Game.Money -= Lane2Plane.GetRefuelPrice();
+                    if(Game.getMoney() >= Lane2Plane.GetRefuelPrice()){
+                        //timer start
+                        Game.removeMoney(Lane2Plane.GetRefuelPrice());
                         Lane2Plane.addFuelHandlers(CrewList);
                         UpdateTopUI();
-                        UpdateLaneUI(2);
                         BTN_Lane2Refuel.setEnabled(false);
+
+                        //timer
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Refueling: ",5);
+                        Lane2RefuelPrice.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane2RefuelPrice.setText(item.toString());
+                                if(item.getTime()<=0){
+
+                                    Lane2Plane.FuelUp();
+                                    Lane2Plane.clearFuelHandlers();
+                                    UpdateLaneUI(2);
+                                    UpdateTopUI();
+                                    verifyDepart(2,Lane2Plane);
+                                    Lane2RefuelPrice.setText("Fueled Up");
+
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
                     }else Label_Lane2Error.setText("Not enough money");
                 }else Label_Lane2Error.setText("Not enough fuel handlers");
-                //timer
-                verifyDepart(2,Lane2Plane);
+            }
+        });
+        BTN_Lane2Depart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Lane2Plane.setStatus("Travelling");
+                Lane2Plane.setDistance(Lane2Distance.getSelectedIndex()+1);
+                Lane2Plane.setReturning(true);
+                PlaneList.SentPlanesListModel.addElement(new TimedItem(Lane2Plane,Lane2Plane.getDistance()*5));
+                DisplayLane(null,2);
+                BTN_Lane2Depart.setEnabled(false);
+                initLaneButtons(2,false);
+                BTN_ToLane2.setEnabled(true);
+                BTN_ToLane2.setText("Dock to lane 2");
+                Lane2Plane = null;
             }
         });
 
         BTN_Lane3Load.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!Lane3Plane.IsLoadedWithBagages()){
+                if(!Lane3Plane.isReturning()){
                     //load
-                    if (CrewList.GetNrOfAvailableBagageHandlers() >= Lane3Plane.GetNeededBagagehandlers()) {
-                        Lane3Plane.LoadBagages();
+                    if(CrewList.GetNrOfAvailableBagageHandlers()>= Lane3Plane.GetNeededBagagehandlers()){
+                        Lane3Plane.addBagageHandlers(CrewList);
+                        BTN_Lane3Load.setEnabled(false);
+                        UpdateTopUI();
+
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Loading: ",5);
+                        Lane3BagageH.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane3BagageH.setText(item.toString());
+                                if(item.getTime()<=0){
+                                    Lane3Plane.LoadBagages();
+                                    Lane3Plane.clearBagageHandlers();
+                                    UpdateTopUI();
+                                    verifyDepart(3,Lane3Plane);
+                                    Lane3BagageH.setText("Loaded");
+                                    BTN_ToLane3.setEnabled(false);
+
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
+                    }else Label_Lane3Error.setText("Not Enough Bagage Handlers");
+                }
+                else {
+                    //unload
+                    if(CrewList.GetNrOfAvailableBagageHandlers()>= Lane3Plane.GetNeededBagagehandlers()){
                         Lane3Plane.addBagageHandlers(CrewList);
                         UpdateTopUI();
                         BTN_Lane3Load.setEnabled(false);
-                    } else Label_Lane3Error.setText("Not Enough Bagage Handlers");
-                    //timer
-                    verifyDepart(3, Lane3Plane);
-                }else {
-                    //unload
-                    if(CrewList.GetNrOfAvailableBagageHandlers()>= Lane3Plane.GetNeededBagagehandlers()){
-                        Lane3Plane.UnLoadBagages();
-                        Lane3Plane.addBagageHandlers(CrewList);
-                        UpdateTopUI();
-                        BTN_Lane3Load.setText("Load Bagages");
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Unloading: ",5);
+                        Lane3BagageH.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane3BagageH.setText(item.toString());
+                                if(item.getTime()<=0){
+                                    Lane3Plane.UnLoadBagages();
+                                    Lane3Plane.clearBagageHandlers();
+                                    UpdateTopUI();
+                                    BTN_Lane3Load.setText("Load Bagages");
+                                    Lane3BagageH.setText(MessageFormat.format("Bagage Handlers: {0}",Lane3Plane.GetNeededBagagehandlers()));
+
+                                    if(Lane3Plane.GetCurentPassagers() == 0) {
+                                        Lane3Distance.setEnabled(true);
+                                        BTN_ToLane3.setEnabled(true);
+                                        Lane3Plane.setReturning(false);
+                                    }
+                                    BTN_Lane3Load.setEnabled(true);
+                                    verifyDepart(3,Lane3Plane);
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
                     }else Label_Lane3Error.setText("Not Enough Bagage Handlers");
-                    //timer
-                }
-                if(Lane3Plane.IsUndockable()) {
-                    BTN_ToLane3.setEnabled(false);
-                    Lane3Distance.setEnabled(false);
-                }
-                else {
-                    BTN_ToLane3.setEnabled(true);
-                    Lane3Distance.setEnabled(false);
                 }
             }
         });
         BTN_Lane3Board.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(Lane3Plane.GetCurentPassagers() == 0){
-                    //bord
+                if(!Lane3Plane.isReturning()){
+                    //board
                     if (Game.AwaitingPassagers > 0) {
-                        if (Game.AwaitingPassagers >= Lane3Plane.GetMaxPassagers()) {
-                            Lane3Plane.BoardPassagers(Lane3Plane.GetMaxPassagers());
-                            Game.AwaitingPassagers -= Lane3Plane.GetMaxPassagers();
-                            BTN_Lane3Board.setEnabled(false);
-                        } else {
-                            Lane3Plane.BoardPassagers(Game.AwaitingPassagers);
-                            Game.AwaitingPassagers = 0;
-                        }
-                        Label_Lane3Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane3Plane)));
-                        UpdateLaneUI(3);
-                        UpdateTopUI();
+                        BTN_Lane3Board.setEnabled(false);
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Boarding: ",5);
+                        Lane3FuelH.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane3FuelH.setText(item.toString());
+                                if(item.getTime()<=0){
+
+                                    if (Game.AwaitingPassagers >= Lane3Plane.GetMaxPassagers()) {
+                                        Lane3Plane.BoardPassagers(Lane3Plane.GetMaxPassagers());
+                                        Game.AwaitingPassagers -= Lane3Plane.GetMaxPassagers();
+                                        BTN_Lane3Board.setEnabled(false);
+                                    } else {
+                                        Lane3Plane.BoardPassagers(Game.AwaitingPassagers);
+                                        Game.AwaitingPassagers = 0;
+                                    }
+
+                                    Label_Lane3Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane3Plane)));
+                                    UpdateLaneUI(3);
+                                    UpdateTopUI();
+                                    BTN_ToLane3.setEnabled(false);
+                                    verifyDepart(3,Lane3Plane);
+                                    Lane3FuelH.setText(MessageFormat.format("Fuel Handlers: {0}",Lane3Plane.GetNeededFuelhandlers()));
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
                     } else Label_Lane3Error.setText("Not enough passagers");
                     //timer
-                    verifyDepart(3, Lane3Plane);
                 }else{
-                    //unbord
-                    Lane3Plane.UnBoardPassagers();
-                    Game.Money+= RevenueCalculator(Lane3Plane);
-                    BTN_Lane3Board.setText("Load Passagers");
-                    UpdateTopUI();
-                    UpdateLaneUI(3);
-                }
+                    //unboard
 
-                if(Lane3Plane.IsUndockable()) {
-                    BTN_ToLane3.setEnabled(false);
-                    Lane3Distance.setEnabled(false);
-                }
-                else {
-                    BTN_ToLane3.setEnabled(true);
-                    Lane3Distance.setEnabled(false);
+                    BTN_Lane3Board.setEnabled(false);
+                    final Timer []timer = new Timer[1];
+                    TimedItem item = new TimedItem("Unboarding: ",5);
+                    Lane3FuelH.setText(item.toString());
+                    timer[0]  = new Timer(1000, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            item.decreaseTimer();
+                            Lane3FuelH.setText(item.toString());
+                            if(item.getTime()<=0){
+                                Lane3FuelH.setText(MessageFormat.format("Fuel Handlers: {0}",Lane3Plane.GetNeededFuelhandlers()));
+                                Game.addMoney(RevenueCalculator(Lane3Plane));
+                                Lane3Plane.UnBoardPassagers();
+                                Label_Lane3Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane3Plane)));
+                                BTN_Lane3Board.setText("Load Passagers");
+                                Game.Trips+=1;
+
+                                UpdateTopUI();
+                                UpdateLaneUI(3);
+                                if(Lane3Plane.IsLoadedWithBagages() == false) {
+                                    Lane3Distance.setEnabled(true);
+                                    BTN_ToLane3.setEnabled(true);
+                                    Lane3Plane.setReturning(false);
+                                }
+                                BTN_Lane3Board.setEnabled(true);
+                                verifyDepart(3,Lane3Plane);
+                                timer[0].stop();
+                            }
+                        }
+                    });
+
+                    timer[0].start();
                 }
             }
         });
@@ -835,19 +1253,54 @@ public class AirportManagerGame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(Game.CrewList.GetNrOfAvailableFuelHandlers() >=Lane3Plane.GetNeededFuelhandlers()){
-                    if(Game.Money >= Lane3Plane.GetRefuelPrice()){
-                        Lane3Plane.FuelUp();
-                        Game.Money -= Lane3Plane.GetRefuelPrice();
+                    if(Game.getMoney() >= Lane3Plane.GetRefuelPrice()){
+                        //timer start
+                        Game.removeMoney(Lane3Plane.GetRefuelPrice());
                         Lane3Plane.addFuelHandlers(CrewList);
                         UpdateTopUI();
-                        UpdateLaneUI(3);
                         BTN_Lane3Refuel.setEnabled(false);
+
+                        //timer
+                        final Timer []timer = new Timer[1];
+                        TimedItem item = new TimedItem("Refueling: ",5);
+                        Lane3RefuelPrice.setText(item.toString());
+                        timer[0]  = new Timer(1000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                item.decreaseTimer();
+                                Lane3RefuelPrice.setText(item.toString());
+                                if(item.getTime()<=0){
+
+                                    Lane3Plane.FuelUp();
+                                    Lane3Plane.clearFuelHandlers();
+                                    UpdateLaneUI(3);
+                                    UpdateTopUI();
+                                    verifyDepart(3,Lane3Plane);
+                                    Lane3RefuelPrice.setText("Fueled Up");
+
+                                    timer[0].stop();
+                                }
+                            }
+                        });
+                        timer[0].start();
                     }else Label_Lane3Error.setText("Not enough money");
                 }else Label_Lane3Error.setText("Not enough fuel handlers");
-                //timer
-                verifyDepart(3,Lane3Plane);
             }
-
+        });
+        BTN_Lane3Depart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Lane3Plane.setStatus("Travelling");
+                Lane3Plane.setDistance(Lane3Distance.getSelectedIndex()+1);
+                Lane3Plane.setReturning(true);
+                PlaneList.SentPlanesListModel.addElement(new TimedItem(Lane3Plane,Lane3Plane.getDistance()*5));
+                DisplayLane(null,3);
+                BTN_Lane3Depart.setEnabled(false);
+                initLaneButtons(3,false);
+                BTN_ToLane3.setEnabled(true);
+                BTN_ToLane3.setText("Dock to lane 3");
+                Lane3Plane = null;
+            }
         });
 
 
@@ -860,7 +1313,25 @@ public class AirportManagerGame extends JFrame {
                 updatingSelection = true;
                 LB_IdlePlanes.clearSelection();//fires list selection event
                 updatingSelection = false;
-                //System.out.println("Awaiting Planes event");
+
+                Plane plane  = (Plane) LB_AwaitingPlanes.getSelectedValue();
+                if(plane!=null){
+                    String planeDetails= MessageFormat.format(
+                            "{0}\nPilot: {1} \nFlight attendants:{2}/{3}\nPassagers: {4}/{5}\nNeeded Bagage Handlers: {6}\nNeeded Fuel Handlers: {7}\nRefuel price: {8}$\nDistance traveled: {9} km\nTotal Revenue: {10}$",
+                            plane.GetID(),
+                            plane.GetPilot() != null? plane.GetPilot().getName():"None",
+                            plane.GetFlightAtendentList().size(),
+                            plane.GetMaxFlightAtendents(),
+                            plane.GetCurentPassagers(),
+                            plane.GetMaxPassagers(),
+                            plane.GetNeededBagagehandlers(),
+                            plane.GetNeededFuelhandlers(),
+                            plane.GetRefuelPrice(),
+                            10000+plane.getDistance()*1000,
+                            RevenueCalculator(plane)
+                    );
+                    TB_PlaneDetails.setText(planeDetails);
+                }
             }
         }
     });
@@ -872,92 +1343,31 @@ public class AirportManagerGame extends JFrame {
                     updatingSelection = true;
                     LB_AwaitingPlanes.clearSelection();//fires list selection event
                     updatingSelection = false;
-                 //   System.out.println("Idle Planes event");
+
+                    Plane plane  = (Plane) LB_IdlePlanes.getSelectedValue();
+                    if(plane!=null){
+                        String planeDetails = MessageFormat.format(
+                                "{0}\nPilot: {1} \nFlight attendants:{2}/{3}\nPassagers: {4}/{5}\nNeeded Bagage Handlers: {6}\nNeeded Fuel Handlers: {7}\nRefuel price: {8}$\nRefueled: {9}",
+                                plane.GetID(),
+                                plane.GetPilot() != null ? plane.GetPilot().getName() : "None",
+                                plane.GetFlightAtendentList().size(),
+                                plane.GetMaxFlightAtendents(),
+                                plane.GetCurentPassagers(),
+                                plane.GetMaxPassagers(),
+                                plane.GetNeededBagagehandlers(),
+                                plane.GetNeededFuelhandlers(),
+                                plane.GetRefuelPrice(),
+                                plane.IsFueled() ? "Yes" : "No"
+                        );
+                        TB_PlaneDetails.setText(planeDetails);
+                    }
                 }
             }
         });
 
     }
 
-    private void DisplayLane(Plane plane,int lane){
-        if(plane !=null){
-            switch (lane){
-                case 1:
-                    Label_Lane1PlaneName.setText(plane.toString());
-                    Label_Lane1Passagers.setText("Passagers: "+plane.GetCurentPassagers()+"/"+ plane.GetMaxPassagers());
-                    Label_Lane1Fuel.setText("Fuel: "+(plane.IsFueled()?"100%":"0%"));
-                    Lane1FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
-                    Lane1BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
-                    Lane1RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
-                    Label_Lane1Revenue.setText(MessageFormat.format("Revenue: {0}$",RevenueCalculator(Lane1Plane) ));
 
-                    Lane1Distance.setSelectedIndex(0);
-                    int departTime1 = (Lane1Distance.getSelectedIndex()+1)*5;
-                    Label_Lane1DepartTime.setText("Time: "+departTime1+" Hr (Sec)");
-
-                    break;
-                case 2:
-                    Label_Lane2PlaneName.setText(plane.toString());
-                    Label_Lane2Passagers.setText("Passagers: "+plane.GetCurentPassagers()+"/"+ plane.GetMaxPassagers());
-                    Label_Lane2Fuel.setText("Fuel: "+(plane.IsFueled()?"100%":"0%"));
-                    Lane2FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
-                    Lane2BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
-                    Lane2RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
-                    Label_Lane2Revenue.setText(MessageFormat.format("Revenue: {0}$",RevenueCalculator(Lane2Plane) ));
-
-                    Lane1Distance.setSelectedIndex(0);
-                    int departTime2 = (Lane2Distance.getSelectedIndex()+1)*5;
-                    Label_Lane2DepartTime.setText("Time: "+departTime2+" Hr (Sec)");
-                    break;
-                case 3:
-                    Label_Lane3PlaneName.setText(plane.toString());
-                    Label_Lane3Passagers.setText("Passagers: "+plane.GetCurentPassagers()+"/"+ plane.GetMaxPassagers());
-                    Label_Lane3Fuel.setText("Fuel: "+(plane.IsFueled()?"100%":"0%"));
-                    Lane3FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
-                    Lane3BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
-                    Lane3RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
-                    Label_Lane3Revenue.setText(MessageFormat.format("Revenue: {0}$",RevenueCalculator(Lane3Plane) ));
-
-                    Lane1Distance.setSelectedIndex(0);
-                    int departTime3 = (Lane2Distance.getSelectedIndex()+1)*5;
-                    Label_Lane3DepartTime.setText("Time: "+departTime3+" Hr (Sec)");
-                    break;
-            }
-        }else {
-            switch (lane){
-                case 1:
-                    Label_Lane1PlaneName.setText("------");
-                    Label_Lane1Passagers.setText("Passagers: 0/0");
-                    Label_Lane1Fuel.setText("Fuel: 0%");
-                    Lane1FuelH.setText("Fuel Handlers: ---");
-                    Lane1BagageH.setText("Bagage Handlers: ---");
-                    Lane1RefuelPrice.setText("Refuel price: ---");
-                    Label_Lane1Revenue.setText("Revenue: --- $");
-                    Label_Lane1DepartTime.setText("Time: ---");
-                    break;
-                case 2:
-                    Label_Lane2PlaneName.setText("------");
-                    Label_Lane2Passagers.setText("Passagers: 0/0");
-                    Label_Lane2Fuel.setText("Fuel: 0%");
-                    Lane2FuelH.setText("Fuel Handlers: ---");
-                    Lane2BagageH.setText("Bagage Handlers: ---");
-                    Lane2RefuelPrice.setText("Refuel price: ---");
-                    Label_Lane2Revenue.setText("Revenue: --- $");
-                    Label_Lane2DepartTime.setText("Time: ---");
-                    break;
-                case 3:
-                    Label_Lane3PlaneName.setText("------");
-                    Label_Lane3Passagers.setText("Passagers: 0/0");
-                    Label_Lane3Fuel.setText("Fuel: 0%");
-                    Lane3FuelH.setText("Fuel Handlers: ---");
-                    Lane3BagageH.setText("Bagage Handlers: ---");
-                    Lane3RefuelPrice.setText("Refuel price: ---");
-                    Label_Lane3Revenue.setText("Revenue: --- $");
-                    Label_Lane3DepartTime.setText("Time: ---");
-                    break;
-            }
-        }
-    }
     private void addConstraints(){
         TB_PlaneDetails.setEditable(false);
         TB_PlaneDetails.setCaret(new DefaultCaret(){@Override public void paint(Graphics g){}}); //
