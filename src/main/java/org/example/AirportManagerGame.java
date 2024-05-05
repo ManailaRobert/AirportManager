@@ -360,10 +360,11 @@ public class AirportManagerGame extends JFrame {
                     Lane1FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
                     Lane1BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
                     Lane1RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
+                    Lane1Distance.setSelectedIndex(plane.getDistance()-1);
                     Label_Lane1Revenue.setText(MessageFormat.format("Revenue: {0}$",RevenueCalculator(Lane1Plane) ));
                     Label_Lane1Status.setText("Status: Not Ready");
 
-                    Lane1Distance.setSelectedIndex(0);
+
                     int departTime1 = (Lane1Distance.getSelectedIndex()+1)*5;
                     Label_Lane1DepartTime.setText("Time: "+departTime1+" Hr (Sec)");
 
@@ -375,10 +376,11 @@ public class AirportManagerGame extends JFrame {
                     Lane2FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
                     Lane2BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
                     Lane2RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
+                    Lane2Distance.setSelectedIndex(plane.getDistance()-1);
                     Label_Lane2Revenue.setText(MessageFormat.format("Revenue: {0}$",RevenueCalculator(Lane2Plane) ));
                     Label_Lane2Status.setText("Status: Not Ready");
 
-                    Lane1Distance.setSelectedIndex(0);
+
                     int departTime2 = (Lane2Distance.getSelectedIndex()+1)*5;
                     Label_Lane2DepartTime.setText("Time: "+departTime2+" Hr (Sec)");
                     break;
@@ -389,11 +391,12 @@ public class AirportManagerGame extends JFrame {
                     Lane3FuelH.setText("Fuel Handlers: "+ plane.GetNeededFuelhandlers());
                     Lane3BagageH.setText("Bagage Handlers: "+ plane.GetNeededBagagehandlers());
                     Lane3RefuelPrice.setText("Refuel price: " + plane.GetRefuelPrice() + " $");
+                    Lane3Distance.setSelectedIndex(plane.getDistance()-1);
                     Label_Lane3Revenue.setText(MessageFormat.format("Revenue: {0}$",RevenueCalculator(Lane3Plane) ));
                     Label_Lane3Status.setText("Status: Not Ready");
 
-                    Lane1Distance.setSelectedIndex(0);
-                    int departTime3 = (Lane2Distance.getSelectedIndex()+1)*5;
+
+                    int departTime3 = (Lane3Distance.getSelectedIndex()+1)*5;
                     Label_Lane3DepartTime.setText("Time: "+departTime3+" Hr (Sec)");
                     break;
             }
@@ -890,6 +893,7 @@ public class AirportManagerGame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Lane1Plane.setStatus("Travelling");
                 Lane1Plane.setDistance(Lane1Distance.getSelectedIndex()+1);
+                System.out.println(Lane1Plane.getDistance());
                 Lane1Plane.setReturning(true);
                 PlaneList.SentPlanesListModel.addElement(new TimedItem(Lane1Plane,Lane1Plane.getDistance()*5));
                 DisplayLane(null,1);
