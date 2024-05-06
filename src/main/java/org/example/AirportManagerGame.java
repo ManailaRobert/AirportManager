@@ -174,7 +174,6 @@ public class AirportManagerGame extends JFrame {
         addEvents();
         InitializeGame();
         setVisible(true);
-
     }
     Game Game;
     private PlaneList PlaneList;
@@ -735,6 +734,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane1Error.setText("");
                     }else Label_Lane1Error.setText("Not Enough Bagage Handlers");
                 }
                 else {
@@ -770,6 +770,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane1Error.setText("");
                     }else Label_Lane1Error.setText("Not Enough Bagage Handlers");
                 }
             }
@@ -811,6 +812,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane1Error.setText("");
                     } else Label_Lane1Error.setText("Not enough passagers");
                 }else{
                     //unboard
@@ -884,6 +886,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane1Error.setText("");
                     }else Label_Lane1Error.setText("Not enough money");
                 }else Label_Lane1Error.setText("Not enough fuel handlers");
             }
@@ -936,6 +939,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane2Error.setText("");
                     }else Label_Lane2Error.setText("Not Enough Bagage Handlers");
                 }
                 else {
@@ -971,6 +975,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane2Error.setText("");
                     }else Label_Lane2Error.setText("Not Enough Bagage Handlers");
                 }
             }
@@ -1012,6 +1017,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane2Error.setText("");
                     } else Label_Lane2Error.setText("Not enough passagers");
                     //timer
                 }else{
@@ -1086,6 +1092,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane2Error.setText("");
                     }else Label_Lane2Error.setText("Not enough money");
                 }else Label_Lane2Error.setText("Not enough fuel handlers");
             }
@@ -1136,7 +1143,9 @@ public class AirportManagerGame extends JFrame {
                                 }
                             }
                         });
+
                         timer[0].start();
+                        Label_Lane3Error.setText("");
                     }else Label_Lane3Error.setText("Not Enough Bagage Handlers");
                 }
                 else {
@@ -1172,6 +1181,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane3Error.setText("");
                     }else Label_Lane3Error.setText("Not Enough Bagage Handlers");
                 }
             }
@@ -1213,6 +1223,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane3Error.setText("");
                     } else Label_Lane3Error.setText("Not enough passagers");
                     //timer
                 }else{
@@ -1287,6 +1298,7 @@ public class AirportManagerGame extends JFrame {
                             }
                         });
                         timer[0].start();
+                        Label_Lane3Error.setText("");
                     }else Label_Lane3Error.setText("Not enough money");
                 }else Label_Lane3Error.setText("Not enough fuel handlers");
             }
@@ -1376,7 +1388,6 @@ public class AirportManagerGame extends JFrame {
         TB_PlaneDetails.setEditable(false);
         TB_PlaneDetails.setCaret(new DefaultCaret(){@Override public void paint(Graphics g){}}); //
         LB_SentPlanes.setSelectionModel(new DefaultListSelectionModel(){@Override public void setSelectionInterval(int index0,int index1){}});
-
     }
 
     private void decorateUI(){
