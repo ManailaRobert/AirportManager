@@ -201,7 +201,7 @@ public class AirportManagerGame extends JFrame {
         LB_SentPlanes.setModel(PlaneList.SentPlanesListModel);
         LB_AwaitingPlanes.setModel(PlaneList.AwaitingPlanesListModel);
 
-
+        // enroute planes timer
         Timer timer1  = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -221,6 +221,7 @@ public class AirportManagerGame extends JFrame {
         });
         timer1.start();
 
+        //new passagers times
         Timer timer2  = new Timer(60000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -229,6 +230,7 @@ public class AirportManagerGame extends JFrame {
             }
         });
         timer2.start();
+
         //dummy data
         for(int i = 1; i <=10;i++){
             Random random =new Random();
@@ -236,7 +238,6 @@ public class AirportManagerGame extends JFrame {
             PlaneList.IdlePlanesListModel.addElement(plane);
             PlaneList.AllPlanes.add(plane);
         }
-
         for(int i = 1; i <=10;i++){
             Pilot pilot = new Pilot();
             CrewList.add(pilot);
@@ -310,7 +311,6 @@ public class AirportManagerGame extends JFrame {
                 BTN_Lane1Board.setEnabled(boolValue);
                 BTN_Lane1Load.setEnabled(boolValue);
                 BTN_Lane1Refuel.setEnabled(boolValue);
-
                 Lane1Distance.setEnabled(boolValue);
                 break;
             case 2:
@@ -702,7 +702,7 @@ public class AirportManagerGame extends JFrame {
             }
         });
 
-        // btn lanes ----------------------------------------------------------------> work in progress ->depart
+        // btn lanes
         BTN_Lane1Load.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
