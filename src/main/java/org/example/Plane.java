@@ -98,6 +98,8 @@ public boolean IsUndockable() {
         return  RefuelPrice;
     }
 
+
+
    //bagages
    public  boolean IsLoadedWithBagages(){
         return  BagagesLoaded;
@@ -146,6 +148,13 @@ public boolean IsUndockable() {
    //flight atendents
     public List<FlightAtendent> GetFlightAtendentList(){
        return FlightAtendents;
+    }
+
+    public void clearFlightAttendents(){
+        for(FlightAtendent crew:FlightAtendents){
+            crew.setAssignedPlane(null);
+        }
+        FlightAtendents.clear();
     }
     public  int GetMaxFlightAtendents(){
        return MaxFlightAtendents;

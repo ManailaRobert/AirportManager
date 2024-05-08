@@ -7,6 +7,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -263,6 +267,14 @@ public class AirportManagerGame extends JFrame {
         BTN_Lane2Depart.setEnabled(false);
         BTN_Lane3Depart.setEnabled(false);
 
+        try{
+            BufferedReader fisier = new BufferedReader(new FileReader("score.txt"));
+            Game.Trips = (fisier.read());
+            //System.out.println(Game.Trips);
+            fisier.close();
+        }catch (Exception exception){
+            System.out.println(exception.getMessage());
+        }
         UpdateTopUI();
 
     }
@@ -439,6 +451,7 @@ public class AirportManagerGame extends JFrame {
     }
     boolean updatingSelection = false;
 
+
     private int RevenueCalculator (Plane plane){
         return plane.GetCurentPassagers() * Game.getPassagerValue() * plane.getDistance() * Game.getDistanceValue();
     }
@@ -528,6 +541,9 @@ public class AirportManagerGame extends JFrame {
                         Game.AwaitingPassagers += Lane1Plane.GetCurentPassagers();
                         Lane1Plane.UnBoardPassagers();
                         Lane1Plane.clearFuelHandlers();
+
+//                        Lane1Plane.clearFlightAttendents();
+//                        Lane1Plane.RemovePilot();
 
                         Lane1Plane = null;
 
@@ -834,6 +850,16 @@ public class AirportManagerGame extends JFrame {
                                 BTN_Lane1Board.setText("Load Passagers");
                                 Game.Trips+=1;
 
+                                try{
+                                    BufferedWriter fisier = new BufferedWriter(new FileWriter("score.txt"));
+
+                                    fisier.write(Integer.toString(Game.Trips));
+                                    fisier.close();
+                                }catch (Exception exception){
+                                    System.out.println(exception.getMessage());
+                                }
+
+
                                 UpdateTopUI();
                                 UpdateLaneUI(1);
                                 if(Lane1Plane.IsLoadedWithBagages() == false) {
@@ -896,7 +922,6 @@ public class AirportManagerGame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Lane1Plane.setStatus("Travelling");
                 Lane1Plane.setDistance(Lane1Distance.getSelectedIndex()+1);
-                System.out.println(Lane1Plane.getDistance());
                 Lane1Plane.setReturning(true);
                 PlaneList.SentPlanesListModel.addElement(new TimedItem(Lane1Plane,Lane1Plane.getDistance()*5));
                 DisplayLane(null,1);
@@ -1039,6 +1064,13 @@ public class AirportManagerGame extends JFrame {
                                 Label_Lane2Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane2Plane)));
                                 BTN_Lane2Board.setText("Load Passagers");
                                 Game.Trips+=1;
+                                try{
+                                    BufferedWriter fisier = new BufferedWriter(new FileWriter("score.txt"));
+                                    fisier.write(Integer.toString(Game.Trips));
+                                    fisier.close();
+                                }catch (Exception exception){
+                                    System.out.println(exception.getMessage());
+                                }
 
                                 UpdateTopUI();
                                 UpdateLaneUI(2);
@@ -1245,6 +1277,14 @@ public class AirportManagerGame extends JFrame {
                                 Label_Lane3Revenue.setText(MessageFormat.format("Revenue: {0}$", RevenueCalculator(Lane3Plane)));
                                 BTN_Lane3Board.setText("Load Passagers");
                                 Game.Trips+=1;
+
+                                try{
+                                    BufferedWriter fisier = new BufferedWriter(new FileWriter("score.txt"));
+                                    fisier.write(Integer.toString(Game.Trips));
+                                    fisier.close();
+                                }catch (Exception exception){
+                                    System.out.println(exception.getMessage());
+                                }
 
                                 UpdateTopUI();
                                 UpdateLaneUI(3);
