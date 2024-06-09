@@ -83,6 +83,23 @@ public class ShopWindow extends JFrame {
         addUI();
         addEvents();
 
+        //Default selection for Planes
+        Plane plane = new Plane(1,"");
+        String planeDetails = "Plane LVL " +1+
+                "\nMax Passagers: " +plane.GetMaxPassagers()+
+                "\nMax Flight Atendents: " + plane.GetMaxFlightAtendents()+
+                "\nMax Bagage Handlers: " + plane.GetNeededBagagehandlers()+
+                "\nMax Fuel Handlers: " + plane.GetNeededFuelhandlers()+
+                "\nRefuel price: " +plane.GetRefuelPrice()+"$"+
+                "\nPrice: " + plane.getPrice()+"$";
+        TB_Details.setText(planeDetails);
+        Label_TotalPricePlanes.setText(MessageFormat.format("Total price: {0}$",1*plane.getPrice()));
+
+        //Default selection for crew
+        Pilot pilot = new Pilot();
+        Label_TotalPriceCrew.setText(MessageFormat.format("Total price: {0}$",1*pilot.getPrice()));
+
+
         Timer timer2  = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -157,7 +174,6 @@ public class ShopWindow extends JFrame {
             }
         });
 
-
         LB_Crew.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -206,7 +222,6 @@ public class ShopWindow extends JFrame {
                         Label_TotalPriceCrew.setText(MessageFormat.format("Total price: {0}$",QTY*fuelHandler.getPrice()));
                         break;
                 }
-
             }
         });
         BTN_BuyCrew.addActionListener(new ActionListener() {

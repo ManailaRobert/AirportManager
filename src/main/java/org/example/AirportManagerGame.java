@@ -26,7 +26,7 @@ public class AirportManagerGame extends JFrame {
 
     JPanel LB_DetailsPanel = new JPanel();
     JLabel Label_PlaneDetails = new JLabel("Plane details:");
-    JTextArea  TB_PlaneDetails = new JTextArea("Plane details");
+    JTextArea  TB_PlaneDetails = new JTextArea("");
 
     //top UI
     JPanel topUI = new JPanel();
@@ -57,7 +57,7 @@ public class AirportManagerGame extends JFrame {
 
     //sent planes
     JPanel SentPlanesPanel = new JPanel(new GridLayout(2,1));
-    JLabel Label_SentPlanes = new JLabel("Enroute planes");
+    JLabel Label_SentPlanes = new JLabel("(0) Enroute planes");
     JList  LB_SentPlanes = new JList<>();
 
     //lane 1
@@ -218,6 +218,9 @@ public class AirportManagerGame extends JFrame {
                     PlaneList.AwaitingPlanesListModel.addElement(plane);
                     plane.setStatus("Awaiting to dock");
                     plane.UseFuel();
+
+                    Label_SentPlanes.setText(MessageFormat.format("({0}) Enroute Planes",PlaneList.SentPlanesListModel.getSize()));
+                    Label_AwaitingPlanes.setText(MessageFormat.format("({0}) Awaiting Planes",PlaneList.AwaitingPlanesListModel.getSize()));
                 }
                 LB_SentPlanes.repaint();
             }
@@ -235,29 +238,29 @@ public class AirportManagerGame extends JFrame {
         });
         timer2.start();
 
-        //dummy data
-        for(int i = 1; i <=10;i++){
-            Random random =new Random();
-            Plane plane = new Plane(random.nextInt(1,6),"Idle");
-            PlaneList.IdlePlanesListModel.addElement(plane);
-            PlaneList.AllPlanes.add(plane);
-        }
-        for(int i = 1; i <=10;i++){
-            Pilot pilot = new Pilot();
-            CrewList.add(pilot);
-        }
-        for(int i = 1; i <=16;i++){
-            FlightAtendent flightAtendent = new FlightAtendent();
-            CrewList.add(flightAtendent);
-        }
-        for(int i = 1; i <=10;i++){
-            BagageHandler bagageHandler = new BagageHandler();
-            CrewList.add(bagageHandler);
-        }
-        for(int i = 1; i <=10;i++){
-            FuelHandler fuelHandler = new FuelHandler();
-            CrewList.add(fuelHandler);
-        }
+   //dummy data
+//        for(int i = 1; i <=10;i++){
+//            Random random =new Random();
+//            Plane plane = new Plane(random.nextInt(1,6),"Idle");
+//            PlaneList.IdlePlanesListModel.addElement(plane);
+//            PlaneList.AllPlanes.add(plane);
+//        }
+//        for(int i = 1; i <=10;i++){
+//            Pilot pilot = new Pilot();
+//            CrewList.add(pilot);
+//        }
+//        for(int i = 1; i <=16;i++){
+//            FlightAtendent flightAtendent = new FlightAtendent();
+//            CrewList.add(flightAtendent);
+//        }
+//        for(int i = 1; i <=10;i++){
+//            BagageHandler bagageHandler = new BagageHandler();
+//            CrewList.add(bagageHandler);
+//        }
+//        for(int i = 1; i <=10;i++){
+//            FuelHandler fuelHandler = new FuelHandler();
+//            CrewList.add(fuelHandler);
+//        }
 
 
         initLaneButtons(1,false);
@@ -267,15 +270,22 @@ public class AirportManagerGame extends JFrame {
         BTN_Lane2Depart.setEnabled(false);
         BTN_Lane3Depart.setEnabled(false);
 
+
         try{
             BufferedReader fisier = new BufferedReader(new FileReader("score.txt"));
-            Game.Trips = (fisier.read());
-            //System.out.println(Game.Trips);
+            Game.Trips = (Integer.parseInt(fisier.readLine()));
             fisier.close();
         }catch (Exception exception){
-            System.out.println(exception.getMessage());
+            try{
+                BufferedWriter fisier2 = new BufferedWriter(new FileWriter("score.txt"));
+                fisier2.write(Integer.toString(Game.Trips));
+                fisier2.close();
+            }catch (Exception ex){
+                System.out.println(ex.getMessage());
+            }
         }
         UpdateTopUI();
+        System.out.println(Game.Trips);
 
     }
 
@@ -498,6 +508,7 @@ public class AirportManagerGame extends JFrame {
                     {
                         Lane1Plane = (Plane) LB_AwaitingPlanes.getSelectedValue();
                         PlaneList.AwaitingPlanesListModel.removeElement(Lane1Plane);
+                        Label_AwaitingPlanes.setText(MessageFormat.format("({0}) Awaiting Planes",PlaneList.AwaitingPlanesListModel.getSize()));
 
                     } else if (LB_IdlePlanes.getSelectedValue()!=null) {
                         Lane1Plane = (Plane) LB_IdlePlanes.getSelectedValue();
@@ -566,6 +577,7 @@ public class AirportManagerGame extends JFrame {
                     {
                         Lane2Plane = (Plane) LB_AwaitingPlanes.getSelectedValue();
                         PlaneList.AwaitingPlanesListModel.removeElement(Lane2Plane);
+                        Label_AwaitingPlanes.setText(MessageFormat.format("({0}) Awaiting Planes",PlaneList.AwaitingPlanesListModel.getSize()));
                     } else if (LB_IdlePlanes.getSelectedValue()!=null) {
                         Lane2Plane = (Plane) LB_IdlePlanes.getSelectedValue();
                         PlaneList.IdlePlanesListModel.removeElement(Lane2Plane);
@@ -632,6 +644,7 @@ public class AirportManagerGame extends JFrame {
                     {
                         Lane3Plane = (Plane) LB_AwaitingPlanes.getSelectedValue();
                         PlaneList.AwaitingPlanesListModel.removeElement(Lane3Plane);
+                        Label_AwaitingPlanes.setText(MessageFormat.format("({0}) Awaiting Planes",PlaneList.AwaitingPlanesListModel.getSize()));
                     } else if (LB_IdlePlanes.getSelectedValue()!=null) {
                         Lane3Plane = (Plane) LB_IdlePlanes.getSelectedValue();
                         PlaneList.IdlePlanesListModel.removeElement(Lane3Plane);
@@ -924,6 +937,8 @@ public class AirportManagerGame extends JFrame {
                 Lane1Plane.setDistance(Lane1Distance.getSelectedIndex()+1);
                 Lane1Plane.setReturning(true);
                 PlaneList.SentPlanesListModel.addElement(new TimedItem(Lane1Plane,Lane1Plane.getDistance()*5));
+                Label_SentPlanes.setText(MessageFormat.format("({0}) Enroute Planes",PlaneList.SentPlanesListModel.getSize()));
+
                 DisplayLane(null,1);
                 BTN_Lane1Depart.setEnabled(false);
                 initLaneButtons(1,false);
@@ -1136,6 +1151,8 @@ public class AirportManagerGame extends JFrame {
                 Lane2Plane.setDistance(Lane2Distance.getSelectedIndex()+1);
                 Lane2Plane.setReturning(true);
                 PlaneList.SentPlanesListModel.addElement(new TimedItem(Lane2Plane,Lane2Plane.getDistance()*5));
+                Label_SentPlanes.setText(MessageFormat.format("({0}) Enroute Planes",PlaneList.SentPlanesListModel.getSize()));
+
                 DisplayLane(null,2);
                 BTN_Lane2Depart.setEnabled(false);
                 initLaneButtons(2,false);
@@ -1350,6 +1367,8 @@ public class AirportManagerGame extends JFrame {
                 Lane3Plane.setDistance(Lane3Distance.getSelectedIndex()+1);
                 Lane3Plane.setReturning(true);
                 PlaneList.SentPlanesListModel.addElement(new TimedItem(Lane3Plane,Lane3Plane.getDistance()*5));
+                Label_SentPlanes.setText(MessageFormat.format("({0}) Enroute Planes",PlaneList.SentPlanesListModel.getSize()));
+
                 DisplayLane(null,3);
                 BTN_Lane3Depart.setEnabled(false);
                 initLaneButtons(3,false);
